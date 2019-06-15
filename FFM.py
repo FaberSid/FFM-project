@@ -2,10 +2,9 @@ import os
 from discord.ext import commands as c
 from module.prefix import table
 from module import db
-import colorama
-from colorama import Fore, Back, Style
-colorama.init()
+
 db.init()
+
 
 class MyBot(c.Bot):
     async def on_ready(self):
@@ -19,16 +18,19 @@ class MyBot(c.Bot):
         print('------')
         import pathlib
         cur = pathlib.Path('.')
-        print(f'import')
         for p in cur.glob('module/*.py'):
             try:
                 self.load_extension(f'module.{p.stem}')
-                print(f'module.{p.stem}')
+                print(f'LOADING       :module.{p.stem}')
+            except c.errors.ExtensionAlreadyLoaded:
+                print(f'Already Loaded:module.{p.stem}')
             except c.errors.NoEntryPointError:
-                print(f'{Fore.RED}module.{p.stem}{Style.RESET_ALL}')
+                print(f'NoEntryPoint  :module.{p.stem}')
+        print('------')
 
     async def on_guild_remove(guild):
         db.guild_remove(guild)
+
 
 bot = MyBot(command_prefix=table)
 
