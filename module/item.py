@@ -35,7 +35,6 @@ class item(c.Cog):
                 my_items = db.player.item.get_list(user_id)
                 item_list = "\n".join("{} : {}個".format(items[i[0]], i[1]) for i in my_items)
                 return await ctx.send("""<@{}>が所有するアイテム：\n{}""".format(user_id, item_list))
-            db.commit()
         finally:
             channel_in_transaction.remove(channel_id)
 
@@ -91,7 +90,6 @@ class item(c.Cog):
         if not consume_an_item(user_id, 3):
             return await ctx.send("<@{}>は祈りの書を持っていない！".format(user_id))
         db.player.hp.update(1, prayed_user_id)
-        db.commit()
         return await ctx.send("<@{0}>は祈りを捧げ、<@{1}>は復活した！\n<@{1}> 残りHP: 1".format(user_id, prayed_user_id, ))
 
 def consume_an_item(user_id, item_id):

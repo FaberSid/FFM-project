@@ -25,7 +25,6 @@ class attack(c.Cog):
         try:
             channel_in_transaction.append(channel_id)
             await self._attack(ctx, ctx.message.author.id, channel_id)
-            db.commit()
         finally:
             channel_in_transaction.remove(channel_id)
 
