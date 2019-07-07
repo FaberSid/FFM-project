@@ -1,12 +1,12 @@
 from discord.ext import commands as c
 import discord
-import json
-from module import db
+import requests
+from module import db, item
 import random
 import math
 
-f = open('assets/monsters.json', 'r', encoding="utf-8")
-monsters = json.load(f)
+r = requests.get(f'{db.CONFIG_ROOT}/Discord/FFM/assets/monsters.json')
+monsters = r.json()
 MONSTER_NUM = 50
 special_monster = {}
 
@@ -123,13 +123,13 @@ def win_process(channel_id, boss_level, monster_name):
         p = min(0.02 * boss_level * boss_level / get_player_exp(member_id), 0.1)
         if (boss_level % 50 == 0 or is_cicero) and random.random() < p:
             elixir_members += "<@{}> ".format(member_id)
-            obtain_an_item(member_id, 1)
+            item.consume_an_item(member_id, 1)
         if random.random() < p or is_cicero:
             fire_members += "<@{}> ".format(member_id)
-            obtain_an_item(member_id, 2)
+            item.consume_an_item(member_id, 2)
         if random.random() < p * 2 or is_cicero:
             pray_members += "<@{}> ".format(member_id)
-            obtain_an_item(member_id, 3)
+            item.consume_an_item(member_id, 3)
     if fire_members:
         fire_members += "は`ファイアボールの書`を手に入れた！"
     if elixir_members:

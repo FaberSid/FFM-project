@@ -1,11 +1,11 @@
 from discord.ext import commands as c
 from module import db
 import random
-import json
+import requests
 from module import battle
 
-f = open('assets/monsters.json', 'r', encoding="utf-8")
-monsters = json.load(f)
+r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/monsters.json')
+monsters = r.json()
 MONSTER_NUM = 50
 channel_in_transaction=[]
 special_monster = {}

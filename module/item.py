@@ -3,7 +3,7 @@ from module import db
 import discord
 import math
 import random
-import json
+import requests
 from module import battle
 
 items = {-10: "運営の証", -9: "サポーターの証", 1: "エリクサー", 2: "ファイアボールの書", 3: "祈りの書", 4: "解毒剤",}
@@ -13,8 +13,8 @@ item_description = """アイテムの説明
 祈りの書:仲間一人を復活させる。
 サポーターの証:MMOくんをサポートしてくれた証だ！
 """
-f = open('assets/monsters.json', 'r', encoding="utf-8")
-monsters = json.load(f)
+r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/monsters.json')
+monsters = r.json()
 MONSTER_NUM = 50
 channel_in_transaction=[]
 special_monster = {}

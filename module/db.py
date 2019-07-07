@@ -1,6 +1,8 @@
 import os
 import psycopg2
 
+CONFIG_ROOT=os.environ.get("DISCORD_BOT_CONFIG_ROOT")
+
 def init():
     conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
     c = conn.cursor()
@@ -43,9 +45,13 @@ class player:
             return c.fetchone()[0]
 
         def add(user_id, money):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
             c.execute("UPDATE player SET money=money+%s WHERE user_id=%s", (money, user_id))
 
         def pay(user_id, money):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
             c.execute("UPDATE player SET money=money-%s WHERE user_id=%s", (money, user_id))
 
     class status:
@@ -56,13 +62,19 @@ class player:
         """
 
         def add(user_id, status_id):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
             c.execute("UPDATE player SET status=status|%s WHERE user_id=%s", (status_id, user_id,))
 
         def remove(user_id, status_id):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
             c.execute("UPDATE player SET status=status&%s WHERE user_id=%s",
                          (sum(list(statuses.keys())) - status_id, user_id,))
 
         def reset(user_id, status_id):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
             c.execute("UPDATE player SET status=0 WHERE user_id=%s", (user_id,))
 
     class experience:
@@ -73,6 +85,7 @@ class player:
             player_exp = c.fetchone()
             if not player_exp:
                 c.execute("INSERT INTO player values( %s, %s, 0)", (user_id, 1))
+                conn.commit()
                 player_exp = [1, ]
             return player_exp[0]
 
@@ -192,14 +205,20 @@ class channel:
 class shop:
     class rate:
         def all():
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
             c.execute("SELECT * FROM shop_trade")
             return c.fetchall()
 
         def select(item_id):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
             c.execute("SELECT * FROM shop_trade WHERE item_id=%s", (item_id,))
             return c.fetchone()
 
     def sell(user_id, s_id, s_cnt, money):
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+        c = conn.cursor()
         c.execute("UPDATE item SET count=count-%s WHERE user_id=%s and item_id=%s", (s_cnt, user_id, s_id))
         c.execute("UPDATE player SET money=%s WHERE user_id=%s", (money, user_id))
 

@@ -1,14 +1,13 @@
 from discord.ext import commands as c
-import discord
-import json
+import requests
 import math
 import random
 from module import db
 import asyncio
 
 
-f = open('assets/training.json', 'r', encoding="utf-8")
-training_set = json.load(f)
+r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/training.json')
+training_set = r.json()
 
 class training(c.Cog):
     def __init__(self, bot):
