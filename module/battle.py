@@ -164,5 +164,5 @@ async def reset_battle(ctx, channel_id, level_up=False):
         monster = monsters[boss_level % MONSTER_NUM]
         if channel_id in special_monster: del special_monster[channel_id]
     em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".format(monster["name"], boss_level, boss_level * 10 + 50))
-    em.set_image(url=f"https://ffmproject.web.fc2.com/Discord/bot/img/{monster.get('img','404.png')}")
+    em.set_image(url=f"{db.CONFIG_ROOT}Discord/FFM/img/{monster.get('img','404.png')}")
     await ctx.send(embed=em)
