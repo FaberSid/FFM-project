@@ -138,7 +138,8 @@ def win_process(channel_id, boss_level, monster_name):
         pray_members += "は`祈りの書`を手に入れた！"
     level_up_comment = "\n".join([c for c in level_up_comments if c])
     item_get = "\n".join(c for c in [elixir_members, fire_members, pray_members] if c)
-    return "{0}を倒した！\n\n{1}は`{2}`の経験値を得た。{3}\n{4}".format(monster_name, members, exp, level_up_comment, item_get)
+    msg="{0}を倒した！\n\n{1}は`{2}`の経験値を得た。{3}\n{4}".format(monster_name, members, exp, level_up_comment, item_get)
+    return ("勝利メッセージが2000文字を超えたので表示できません" if len(msg)>2000 else msg)
 
 def experiment(user_id, exp):
     player_exp = db.player.experience.get(user_id)
