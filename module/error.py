@@ -1,6 +1,7 @@
 from discord.ext import commands as c
 from discord import Embed
 import traceback
+import getpass
 
 
 class CmdNotFoundError(c.Cog):
@@ -15,6 +16,7 @@ class CmdNotFoundError(c.Cog):
         text = ""
         ch = self.bot.get_channel(597363081928245248)
         for x in a:
+            x = x.replace(f"\\{getpass.getuser()}\\", "\\*\\")
             if len(text + x) < 2000-9:
                 text += x
             else:
