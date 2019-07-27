@@ -7,8 +7,9 @@ from module import battle
 r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/monsters.json')
 monsters = r.json()
 MONSTER_NUM = 50
-channel_in_transaction=[]
+channel_in_transaction = []
 special_monster = {}
+
 
 class attack(c.Cog):
     def __init__(self, bot):
@@ -18,7 +19,8 @@ class attack(c.Cog):
     @c.cooldown(10, 2, c.BucketType.user)
     async def attack(self, ctx):
         """攻撃する"""
-        if ctx.message.author.bot: return
+        if ctx.message.author.bot:
+            return
         channel_id = ctx.message.channel.id
         if channel_id in channel_in_transaction:
             return await ctx.send("`攻撃失敗。ゆっくりコマンドを打ってね。`")
@@ -30,16 +32,17 @@ class attack(c.Cog):
 
     async def _attack(self, ctx, user_id, channel_id):
         player_hp, error_message = await battle.battle(self.bot).into_battle(user_id, channel_id)
-        if error_message: return await ctx.send(error_message)
+        if error_message:
+            return await ctx.send(error_message)
         player_level = battle.get_player_level(user_id)
         boss_level, boss_hp = battle.get_boss_level_and_hp(channel_id)
         rand = random.random()
         player_attack = battle.get_player_attack(player_level, boss_level, rand)
         boss_hp = boss_hp - player_attack
-        if channel_id in special_monster:
-            monster_name = special_monster[channel_id]["name"]
-        else:
-            monster_name = monsters[boss_level % MONSTER_NUM]["name"]
+        # (boss_level - 1) % max(list(map(int, list(monsters.keys())))) + 1
+        _,_,boss_id = db.boss_status.get(channel_id)
+        monster_name = monsters[str(max([i for i in monsters if i <= boss_level]))][boss_id]["name"]
+        # monster_name = monsters[boss_level % MONSTER_NUM]["name"]
         attack_message = battle.get_attack_message(user_id, player_attack, monster_name, rand)
         if boss_hp <= 0:
             win_message = battle.win_process(channel_id, boss_level, monster_name)

@@ -156,14 +156,10 @@ async def reset_battle(ctx, channel_id, level_up=False):
     # boss_max_hp
     db.channel.enemy_levelup(channel_id, level_up)
     boss_level, _ = get_boss_level_and_hp(channel_id)
-    if level_up and boss_level % MONSTER_NUM in [
-        1, 4, 6, 8, 9, 12, 14, 16, 18, 19, 21, 22, 24, 26, 27, 28, 29, 31, 33, 36, 38, 39, 42, 43, 44
-    ] and random.random() < 0.05:
-        monster = monsters[50]
-        special_monster[channel_id] = monster
-    else:
-        monster = monsters[boss_level % MONSTER_NUM]
-        if channel_id in special_monster: del special_monster[channel_id]
+    a = list(map(int, monsters.keys()))
+    monster_data = random.choice(list(enumerate(monsters[str(max([i for i in a if i <= ((boss_level - 1) % max(a) + 1)]))]))[1:])
+    monster = monster_data[1]
+    if channel_id in special_monster: del special_monster[channel_id]
     em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".format(monster["name"], boss_level, boss_level * 10 + 50))
     em.set_image(url=f"{db.CONFIG_ROOT}Discord/FFM/img/{monster.get('img','404.png')}")
     await ctx.send(embed=em)

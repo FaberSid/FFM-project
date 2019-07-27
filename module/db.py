@@ -6,13 +6,36 @@ CONFIG_ROOT=os.environ.get("DISCORD_BOT_CONFIG_ROOT")
 def init():
     conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
     c = conn.cursor()
-    c.execute("create table if not exists in_battle(user_id BIGINT,channel_id BIGINT,player_hp BIGINT check(player_hp >= 0),status BIGINT check(status >= 0))")
-    c.execute("create table if not exists player(user_id BIGINT,experience BIGINT,money BIGINT check(money >= 0))")
-    c.execute("create table if not exists channel_status(channel_id BIGINT,boss_level BIGINT check(boss_level >= 0), boss_hp BIGINT check(boss_level >= 0))")
-    c.execute("create table if not exists item(item_id BIGINT, user_id BIGINT, count BIGINT check(count >= 0), primary key(item_id, user_id))")
+    c.execute("create table if not exists in_battle(\
+                   user_id BIGINT,\
+                   channel_id BIGINT,\
+                   player_hp BIGINT check(player_hp >= 0),\
+                   poison BIGINT check(poison >= 0)\
+               )")
+    c.execute("create table if not exists player(\
+                    user_id BIGINT,\
+                    experience BIGINT,\
+                    money BIGINT check(money >= 0)\
+                )")
+    c.execute("create table if not exists channel_status(\
+                    channel_id BIGINT,\
+                    boss_id BIGINT,\
+                    boss_level BIGINT check(boss_level >= 0),\
+                    boss_hp BIGINT check(boss_level >= 0)\
+                )")
+    c.execute("create table if not exists item(\
+                    item_id BIGINT,\
+                    user_id BIGINT,\
+                    count BIGINT check(count >= 0),\
+                    primary key(item_id, user_id)\
+                )")
     c.execute("create table if not exists shop_trade(item_id BIGINT unique,sell BIGINT)")
     c.execute("create table if not exists prefix(g_id bigserial unique,prefix text)")
-    c.execute("create table if not exists account(user_id BIGINT CONSTRAINT account_user_id_key unique, hash text, msg_id BIGINT)")
+    c.execute("create table if not exists account(\
+                    user_id BIGINT CONSTRAINT account_user_id_key unique,\
+                    hash text,\
+                    msg_id BIGINT\
+                )")
     for data in [(1, 100), (2, 1), (3, 1), (4, 10)]:
         try:
             c.execute("INSERT INTO shop_trade VALUES (%s, %s) ON CONFLICT DO NOTHING", data)
@@ -53,29 +76,6 @@ class player:
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
             c = conn.cursor()
             c.execute("UPDATE player SET money=money-%s WHERE user_id=%s", (money, user_id))
-
-    class status:
-        statuses = {1: "毒"}
-        """
-        ステータスの説明
-        毒:１行動ごとにダメージ（最大HPの1/20）
-        """
-
-        def add(user_id, status_id):
-            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
-            c = conn.cursor()
-            c.execute("UPDATE player SET status=status|%s WHERE user_id=%s", (status_id, user_id,))
-
-        def remove(user_id, status_id):
-            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
-            c = conn.cursor()
-            c.execute("UPDATE player SET status=status&%s WHERE user_id=%s",
-                         (sum(list(statuses.keys())) - status_id, user_id,))
-
-        def reset(user_id, status_id):
-            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
-            c = conn.cursor()
-            c.execute("UPDATE player SET status=0 WHERE user_id=%s", (user_id,))
 
     class experience:
         def get(user_id):
@@ -145,7 +145,7 @@ class boss_status:
     def get(channel_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
-        c.execute("SELECT boss_level, boss_hp FROM channel_status WHERE channel_id=%s", (channel_id,))
+        c.execute("SELECT boss_level, boss_hp, boss_id FROM channel_status WHERE channel_id=%s", (channel_id,))
         return c.fetchone()
 
     def set(channel_id):
@@ -174,7 +174,7 @@ class channel:
         c.execute("DELETE FROM in_battle WHERE channel_id=%s", (channel_id,))
         conn.commit()
 
-    def enemy_levelup(channel_id, level_up=False):
+    def enemy_levelup(channel_id, boss_id, level_up=False):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         query = "UPDATE channel_status SET {} WHERE channel_id=%s".format(
@@ -182,6 +182,12 @@ class channel:
         )
         c.execute(query, (channel_id,))
         conn.commit()
+
+    def set_boss_id(channel_id, boss_id):
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+        c = conn.cursor()
+        c.execute("UPDATE channel_status SET boss_id=%s WHERE channel_id=%s", (boss_id, channel_id))
+
 
     def all_battle_player(channel_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
