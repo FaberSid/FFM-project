@@ -1,11 +1,9 @@
 from discord.ext import commands as c
 from module import db
 import random
-import requests
 from module import battle
+monsters = battle.monsters
 
-r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/monsters.json')
-monsters = r.json()
 MONSTER_NUM = 50
 channel_in_transaction = []
 special_monster = {}
@@ -41,7 +39,7 @@ class attack(c.Cog):
         boss_hp = boss_hp - player_attack
         # (boss_level - 1) % max(list(map(int, list(monsters.keys())))) + 1
         _,_,boss_id = db.boss_status.get(channel_id)
-        monster_name = monsters[str(max([i for i in monsters if i <= boss_level]))][boss_id]["name"]
+        monster_name = monsters[str(max(map(int,[i for i in monsters if int(i) <= boss_level])))][boss_id]["name"]
         # monster_name = monsters[boss_level % MONSTER_NUM]["name"]
         attack_message = battle.get_attack_message(user_id, player_attack, monster_name, rand)
         if boss_hp <= 0:
@@ -50,7 +48,7 @@ class attack(c.Cog):
             await battle.reset_battle(ctx, channel_id, level_up=True)
         else:
             db.boss_status.update(boss_hp, channel_id)
-            boss_attack_message = battle.boss_attack_process(user_id, player_hp, player_level, monster_name, boss_level)
+            boss_attack_message = battle.boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id)
             await ctx.send("{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, boss_level * 10 + 50, boss_attack_message))
 
 def setup(bot):

@@ -43,8 +43,16 @@ def get_player_level(user_id, player_exp=None):
 def get_boss_level_and_hp(channel_id):
     channel_status = db.boss_status.get(channel_id)
     if not channel_status:
-        db.boss_status.set(channel_id)
-        channel_status = [1, 50]
+        from module import str_calc
+        boss_Lv = 1
+        Lv_division = list(map(int, monsters.keys()))
+        monster_division = monsters[str(max([i for i in Lv_division if i <= (boss_Lv-1) % max(Lv_division)+1]))]
+        monster = monster_division[0]
+        monster_details = random.choice(list(enumerate(monster_division[1:])))
+        monster.update(monster_details[1])
+        monster["HP"] = monster["HP"].replace("boss_level", str(boss_Lv))
+        db.boss_status.set(channel_id, monster_details[0], boss_Lv, str_calc.calc(monster["HP"]))
+        channel_status = [boss_Lv, str_calc.calc(monster["HP"])]
     return channel_status[0], channel_status[1]
 
 def get_player_attack(player_level, boss_level, rand):
@@ -72,26 +80,26 @@ def get_attack_message(user_id, player_attack, monster_name, rand):
         kaishin = "会心の一撃！" if rand > 0.96 else ""
         return "<@{}>の攻撃！{}{}に`{}`のダメージを与えた！".format(user_id, kaishin, monster_name, player_attack)
 
-def get_boss_attack(boss_level):
-    if random.random() < 0.01:
-        return 0
-    if boss_level % 50 == 0:
-        return int(boss_level * random.random() * 256)
-    elif boss_level % 50 in [37, 46, 47, 48, 49]:
-        return int(boss_level * random.random())
-    elif boss_level % 5 == 0:
-        return int(boss_level * (1 + random.random()) * 3)
-    else:
-        return int(boss_level * (2 + random.random()) + 5)
+def get_boss_attack(channel_id):
+    from module import str_calc
+    boss_lv, _, boss_id = db.boss_status.get(channel_id)
+    lv_division = list(map(int, monsters.keys()))
+    monster_division = monsters[str(max([i for i in lv_division if i <= (boss_lv - 1) % max(lv_division) + 1]))]
+    monster = monster_division[0]
+    monster_details = random.choice(list(enumerate(monster_division[1:])))
+    monster.update(monster_details[1])
+    monster["ATK"] = monster["ATK"].replace("boss_level", str(boss_lv))
+    print(str_calc.calc(monster["ATK"]))
+    return str_calc.calc(monster["ATK"])
 
-def boss_attack_process(user_id, player_hp, player_level, monster_name, boss_level):
-    boss_attack = get_boss_attack(boss_level)
+def boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id):
+    boss_attack = get_boss_attack(channel_id)
     player_hp = player_hp - boss_attack
     if boss_attack == 0:
         return "{0}の攻撃！<@{1}>は華麗にかわした！\n - <@{1}>のHP:`{2}`/{3}".format(
             monster_name, user_id, player_hp, player_level * 5 + 50)
     elif player_hp <= 0:
-        db.player.hp.update(0,user_id)
+        db.player.hp.update(0, user_id)
         return "{0}の攻撃！<@{1}>は`{2}`のダメージを受けた。\n - <@{1}>のHP:`0`/{3}\n<@{1}>はやられてしまった。。。".format(
             monster_name, user_id, boss_attack, player_level * 5 + 50)
     else:

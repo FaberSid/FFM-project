@@ -134,6 +134,7 @@ class player:
             c.execute("INSERT INTO in_battle values(%s,%s,%s,0)", (user_id, channel_id, player_hp))
             conn.commit()
 
+        @staticmethod
         def update(player_hp, user_id):
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
             c = conn.cursor()
@@ -148,10 +149,10 @@ class boss_status:
         c.execute("SELECT boss_level, boss_hp, boss_id FROM channel_status WHERE channel_id=%s", (channel_id,))
         return c.fetchone()
 
-    def set(channel_id):
+    def set(channel_id, boss_id, boss_level, boss_hp):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
-        c.execute("INSERT INTO channel_status values( %s, %s, %s)", (channel_id, 1, 50))
+        c.execute("INSERT INTO channel_status values( %s, %s, %s, %s)", (channel_id, boss_id, boss_level, boss_hp))
         conn.commit()
 
     def update(boss_hp, channel_id):
