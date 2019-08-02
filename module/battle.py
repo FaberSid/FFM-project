@@ -8,7 +8,6 @@ import math
 r = requests.get(f'{db.CONFIG_ROOT}/Discord/FFM/assets/monsters.json')
 monsters = r.json()
 MONSTER_NUM = 50
-special_monster = {}
 
 class battle(c.Cog):
     def __init__(self, bot):
@@ -40,7 +39,7 @@ def get_player_level(user_id, player_exp=None):
         return int(math.sqrt(player_exp))
     return int(math.sqrt(db.player.experience.get(user_id)))
 
-def get_boss_level_and_hp(channel_id):
+def get_boss(channel_id):
     channel_status = db.boss_status.get(channel_id)
     if not channel_status:
         from module import str_calc
@@ -52,8 +51,8 @@ def get_boss_level_and_hp(channel_id):
         monster.update(monster_details[1])
         monster["HP"] = monster["HP"].replace("boss_level", str(boss_Lv))
         db.boss_status.set(channel_id, monster_details[0], boss_Lv, str_calc.calc(monster["HP"]))
-        channel_status = [boss_Lv, str_calc.calc(monster["HP"])]
-    return channel_status[0], channel_status[1]
+        channel_status = [boss_Lv, str_calc.calc(monster["HP"]), monster_details[0]]
+    return channel_status
 
 def get_player_attack(player_level, boss_level, rand):
     if boss_level % MONSTER_NUM in [20, 40] and rand < 0.1:
@@ -89,7 +88,6 @@ def get_boss_attack(channel_id):
     monster_details = random.choice(list(enumerate(monster_division[1:])))
     monster.update(monster_details[1])
     monster["ATK"] = monster["ATK"].replace("boss_level", str(boss_lv))
-    print(str_calc.calc(monster["ATK"]))
     return str_calc.calc(monster["ATK"])
 
 def boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id):
@@ -119,23 +117,19 @@ def win_process(channel_id, boss_level, monster_name):
     fire_members = ""
     elixir_members = ""
     pray_members = ""
-    is_cicero = channel_id in special_monster
-    if is_cicero or boss_level % MONSTER_NUM == 0:
-        exp = boss_level * 5
-    else:
-        exp = boss_level
+    exp = boss_level
     for battle_member in battle_members:
         member_id = battle_member[0]
         level_up_comments.append(experiment(member_id, exp))
         members += "<@{}> ".format(member_id)
         p = min(0.02 * boss_level * boss_level / get_player_exp(member_id), 0.1)
-        if (boss_level % 50 == 0 or is_cicero) and random.random() < p:
+        if boss_level % 50 == 0 and random.random() < p:
             elixir_members += "<@{}> ".format(member_id)
             item.consume_an_item(member_id, 1)
-        if random.random() < p or is_cicero:
+        if random.random() < p:
             fire_members += "<@{}> ".format(member_id)
             item.consume_an_item(member_id, 2)
-        if random.random() < p * 2 or is_cicero:
+        if random.random() < p * 2:
             pray_members += "<@{}> ".format(member_id)
             item.consume_an_item(member_id, 3)
     if fire_members:
@@ -163,11 +157,19 @@ async def reset_battle(ctx, channel_id, level_up=False):
     db.channel.end_battle(channel_id)
     # boss_max_hp
     db.channel.enemy_levelup(channel_id, level_up)
-    boss_level, _ = get_boss_level_and_hp(channel_id)
-    a = list(map(int, monsters.keys()))
-    monster_data = random.choice(list(enumerate(monsters[str(max([i for i in a if i <= ((boss_level - 1) % max(a) + 1)]))]))[1:])
-    monster = monster_data[1]
-    if channel_id in special_monster: del special_monster[channel_id]
-    em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".format(monster["name"], boss_level, boss_level * 10 + 50))
+    boss_lv, boss_hp, boss_id = get_boss(channel_id)
+    lv_division = list(map(int, monsters.keys()))
+    monster_division = monsters[str(max([i for i in lv_division if i <= (boss_lv - 1) % max(lv_division) + 1]))]
+    monster = monster_division[0]
+    if monster_division[boss_id].get("canReset") == "True":
+        monster_details = random.choice(list(enumerate(monster_division[1:], 1)))
+    else:
+        monster_details = (boss_id, monster_division[boss_id])
+    monster.update(monster_details[1])
+    from module.str_calc import calc
+    monster["HP"] = monster["HP"].replace("boss_level", str(boss_lv))
+    db.boss_status.set(channel_id, monster_details[0], boss_lv,  calc(monster["HP"]))
+    await ctx.send(monster, delete_after=10)
+    em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".format(monster["name"], boss_lv, calc(monster["HP"])))
     em.set_image(url=f"{db.CONFIG_ROOT}Discord/FFM/img/{monster.get('img','404.png')}")
     await ctx.send(embed=em)

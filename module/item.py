@@ -53,27 +53,27 @@ class item(c.Cog):
         user_id, channel_id = ctx.message.author.id, ctx.message.channel.id
         player_hp, error_message = await battle.battle(self.bot).into_battle(user_id, channel_id)
         if error_message:
-            return await bot.say(error_message)
+            return await ctx.send(error_message)
         if not consume_an_item(user_id, 2):
             return await ctx.send(f"<@{user_id}>はファイアボールの書を持っていない！")
         player_level = battle.get_player_level(user_id)
-        boss_Lv, boss_hp = battle.get_boss_level_and_hp(channel_id)
+        boss_lv, boss_hp, boss_id = battle.get_boss(channel_id)
         player_attack = int(player_level * (1 + random.random()) / 10)
         boss_hp = boss_hp - player_attack
-        Lv_division = list(map(int, battle.monsters.keys()))
-        monster_division = battle.monsters[str(max([i for i in Lv_division if i <= (boss_Lv-1) % max(Lv_division)+1]))]
+        lv_division = list(map(int, battle.monsters.keys()))
+        monster_division = battle.monsters[str(max([i for i in lv_division if i <= (boss_lv-1) % max(lv_division)+1]))]
         monster = monster_division[0]
-        monster_details = random.choice(list(enumerate(monster_division[1:])))
+        monster_details = (boss_id, monster_division[boss_id])
         monster.update(monster_details[1])
         monster_name = monster["name"]
         attack_message = "ファイアボール！<@{}>は{}に`{}`のダメージを与えた！".format(user_id, monster_name, player_attack)
         if boss_hp <= 0:
-            win_message = battle.win_process(channel_id, boss_Lv, monster_name)
+            win_message = battle.win_process(channel_id, boss_lv, monster_name)
             await ctx.send("{}\n{}".format(attack_message, win_message))
             await battle.reset_battle(ctx, channel_id, level_up=True)
         else:
             db.boss_status.update(boss_hp, channel_id)
-            await ctx.send("{}\n{}のHP:`{}`/{}".format(attack_message, monster_name, boss_hp, boss_Lv * 10 + 50))
+            await ctx.send("{}\n{}のHP:`{}`/{}".format(attack_message, monster_name, boss_hp, boss_lv * 10 + 50))
 
     @item.command(aliases=['祈りの書','i'])
     async def pray(self, ctx, mentions: discord.Member=None):

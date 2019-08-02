@@ -33,14 +33,11 @@ class attack(c.Cog):
         if error_message:
             return await ctx.send(error_message)
         player_level = battle.get_player_level(user_id)
-        boss_level, boss_hp = battle.get_boss_level_and_hp(channel_id)
+        boss_level, boss_hp, boss_id = battle.get_boss(channel_id)
         rand = random.random()
         player_attack = battle.get_player_attack(player_level, boss_level, rand)
         boss_hp = boss_hp - player_attack
-        # (boss_level - 1) % max(list(map(int, list(monsters.keys())))) + 1
-        _,_,boss_id = db.boss_status.get(channel_id)
         monster_name = monsters[str(max(map(int,[i for i in monsters if int(i) <= boss_level])))][boss_id]["name"]
-        # monster_name = monsters[boss_level % MONSTER_NUM]["name"]
         attack_message = battle.get_attack_message(user_id, player_attack, monster_name, rand)
         if boss_hp <= 0:
             win_message = battle.win_process(channel_id, boss_level, monster_name)
