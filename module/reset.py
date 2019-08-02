@@ -2,7 +2,8 @@ from discord.ext import commands as c
 from module import db
 from module import battle
 
-class reset(c.Cog):
+
+class Reset(c.Cog):
     def __init__(self, bot):
         self.bot = bot
     
@@ -14,5 +15,6 @@ class reset(c.Cog):
         else:
             await ctx.send("このチャンネルでは戦いは行われていないようだ。")
 
+
 def setup(bot):
-    bot.add_cog(reset(bot))
+    bot.add_cog(Reset(bot))

@@ -2,7 +2,7 @@ from discord.ext import commands as c
 import time
 
 
-class ping(c.Cog):
+class Ping(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -15,4 +15,4 @@ class ping(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ping(bot))
+    bot.add_cog(Ping(bot))
