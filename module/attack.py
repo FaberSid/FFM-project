@@ -29,7 +29,7 @@ class attack(c.Cog):
             channel_in_transaction.remove(channel_id)
 
     async def _attack(self, ctx, user_id, channel_id):
-        player_hp, error_message = await battle.battle(self.bot).into_battle(user_id, channel_id)
+        player_hp, error_message = await battle.Battle(self.bot).into_battle(user_id, channel_id)
         if error_message:
             return await ctx.send(error_message)
         player_level = battle.get_player_level(user_id)
