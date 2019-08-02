@@ -1,14 +1,13 @@
-from discord.ext import commands as c
-import discord
+import asyncio
+import math
 import random
 import requests
-import json
 from xml.etree import ElementTree
-import math
+from discord.ext import commands as c
 from module import db
-import asyncio
 
-class quiz(c.Cog):
+
+class Quiz(c.Cog):
     def __init__(self, bot):
         self.bot = bot
     
@@ -16,7 +15,8 @@ class quiz(c.Cog):
     async def q(self, ctx):
         """トレーニングをする"""
         user = ctx.message.author
-        if user.bot: return
+        if user.bot:
+            return
         resp = requests.get(url='http://24th.jp/test/quiz/api_quiz.php')
         quiz_xml = ElementTree.fromstring(resp.text.encode('utf-8'))[1]
         quiz_set = [quiz_xml[2].text, quiz_xml[3].text, quiz_xml[4].text, quiz_xml[5].text]
@@ -45,6 +45,7 @@ class quiz(c.Cog):
         else:
             await ctx.send('残念！正解は「{}」だ。'.format(quiz_xml[2].text))
 
+
 def experiment(user_id, exp):
     player_exp = db.player.experience.get(user_id)
     next_exp = player_exp + exp
@@ -55,10 +56,12 @@ def experiment(user_id, exp):
         return "<@{}>はレベルアップした！`Lv.{} -> Lv.{}`".format(user_id, current_level, next_level)
     return ""
 
+
 def get_player_level(user_id, player_exp=None):
     if player_exp:
         return int(math.sqrt(player_exp))
     return int(math.sqrt(db.player.experience.get(user_id)))
 
+
 def setup(bot):
-    bot.add_cog(quiz(bot))
+    bot.add_cog(Quiz(bot))

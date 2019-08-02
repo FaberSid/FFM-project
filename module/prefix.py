@@ -3,15 +3,15 @@ from discord import Forbidden
 from module import db
 
 
-def table(bot, message):
-    prefix_s=db.prefix(message.guild).get()
+def table(_, message):
+    prefix_s = db.prefix(message.guild).get()
     if prefix_s:
         return prefix_s
     else:
         return "]]"
 
 
-class prefix(c.Cog):
+class Prefix(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -22,7 +22,7 @@ class prefix(c.Cog):
 
     @c.command()
     async def prefix(self, ctx, *, prefix_str):
-        prefix_s=db.prefix(ctx.guild).get()
+        prefix_s = db.prefix(ctx.guild).get()
         if not prefix_s:
             db.prefix(ctx.guild).register(prefix_str)
         try:
@@ -32,4 +32,4 @@ class prefix(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(prefix(bot))
+    bot.add_cog(Prefix(bot))
