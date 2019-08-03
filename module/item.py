@@ -38,7 +38,7 @@ class item(c.Cog):
 
     @item.command(aliases=['エリクサー', 'e'])
     async def elixir(self, ctx):
-        user_id=ctx.message.author.id
+        user_id = ctx.message.author.id
         channel_id = ctx.message.channel.id
         if not consume_an_item(user_id, 1):
             return await ctx.send("<@{}>はエリクサーを持っていない！".format(user_id))
@@ -51,7 +51,7 @@ class item(c.Cog):
     @item.command(aliases=['ファイアボールの書','f'])
     async def fireball(self, ctx):
         user_id, channel_id = ctx.message.author.id, ctx.message.channel.id
-        player_hp, error_message = await battle.battle(self.bot).into_battle(user_id, channel_id)
+        player_hp, error_message = await battle.Battle(self.bot).into_battle(user_id, channel_id)
         if error_message:
             return await ctx.send(error_message)
         if not consume_an_item(user_id, 2):
@@ -75,9 +75,9 @@ class item(c.Cog):
             db.boss_status.update(boss_hp, channel_id)
             await ctx.send("{}\n{}のHP:`{}`/{}".format(attack_message, monster_name, boss_hp, boss_lv * 10 + 50))
 
-    @item.command(aliases=['祈りの書','i'])
-    async def pray(self, ctx, mentions: discord.Member=None):
-        user_id, channel_id=ctx.message.author.id,ctx.message.channel.id
+    @item.command(aliases=['祈りの書', 'i'])
+    async def pray(self, ctx, mentions: discord.Member = None):
+        user_id, channel_id = ctx.message.author.id, ctx.message.channel.id
         if not mentions:
             return await ctx.send("祈りの書は仲間を復活させます。祈る相手を指定して使います。\n例)!!item 祈りの書 @ユーザー名")
         prayed_user_id = mentions.id
@@ -86,7 +86,7 @@ class item(c.Cog):
             return await ctx.send("<@{}>は戦闘に参加していない！".format(prayed_user_id))
         if prayed_user[0] != 0:
             return await ctx.send("<@{}>はまだ生きている！".format(prayed_user_id))
-        player_hp, error_message = await battle.battle(self.bot).into_battle(user_id, channel_id)
+        player_hp, error_message = await battle.Battle(self.bot).into_battle(user_id, channel_id)
         if error_message:
             return error_message
         if not consume_an_item(user_id, 3):
@@ -94,12 +94,22 @@ class item(c.Cog):
         db.player.hp.update(1, prayed_user_id)
         return await ctx.send("<@{0}>は祈りを捧げ、<@{1}>は復活した！\n<@{1}> 残りHP: 1".format(user_id, prayed_user_id, ))
 
+
 def consume_an_item(user_id, item_id):
-    current_count = db.player.item.get_cnt(user_id,item_id)
+    current_count = db.player.item.get_cnt(user_id, item_id)
     if not current_count:
         return False
     db.player.item.update_cnt(user_id, item_id, current_count-1)
     return True
+
+
+def obtain_an_item(user_id, item_id):
+    current_count = db.player.item.get_cnt(user_id, item_id)
+    if not current_count:
+        current_count = 0
+    db.player.item.update_cnt(user_id, item_id, current_count+1)
+    return True
+
 
 def setup(bot):
     bot.add_cog(item(bot))

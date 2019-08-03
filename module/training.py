@@ -2,7 +2,7 @@ from discord.ext import commands as c
 import requests
 import math
 import random
-from module import db
+from module import db, item
 import asyncio
 
 
@@ -33,14 +33,13 @@ class Training(c.Cog):
             comment = experiment(user.id, exp)
             if random.random() < 0.005:
                 comment += "\n`エリクサー`を手に入れた！"
-                obtain_an_item(user.id, 1)
+                item.obtain_an_item(user.id, 1)
             if random.random() < 0.1:
                 comment += "\n`ファイアボールの書`を手に入れた！"
-                obtain_an_item(user.id, 2)
+                item.obtain_an_item(user.id, 2)
             if random.random() < 0.1:
                 comment += "\n`祈りの書`を手に入れた！"
-                obtain_an_item(user.id, 3)
-            db.commit()
+                item.obtain_an_item(user.id, 3)
             await ctx.send('正解だ！{}の経験値を得た。\n{}'.format(exp, comment))
         else:
             await ctx.send('残念！正解は「{}」だ。'.format(answer))
