@@ -10,18 +10,21 @@ def init():
                    user_id BIGINT,\
                    channel_id BIGINT,\
                    player_hp BIGINT check(player_hp >= 0),\
-                   poison BIGINT check(poison >= 0)\
+                   poison BIGINT check(poison >= 0),\
+                   PRIMARY KEY (user_id, channel_id)\
                )")
     c.execute("create table if not exists player(\
                     user_id BIGINT,\
                     experience BIGINT,\
-                    money BIGINT check(money >= 0)\
+                    money BIGINT check(money >= 0),\
+                    PRIMARY KEY (user_id)\
                 )")
     c.execute("create table if not exists channel_status(\
                     channel_id BIGINT,\
                     boss_id BIGINT,\
                     boss_level BIGINT check(boss_level >= 0),\
-                    boss_hp BIGINT check(boss_level >= 0)\
+                    boss_hp BIGINT check(boss_level >= 0),\
+                    PRIMARY KEY (channel_id, boss_id, boss_level)\
                 )")
     c.execute("create table if not exists item(\
                     item_id BIGINT,\
