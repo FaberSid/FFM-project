@@ -170,9 +170,10 @@ async def reset_battle(ctx, channel_id, level_up=False):
     db.channel.enemy_levelup(channel_id, level_up)
     boss_lv, boss_hp, boss_id = get_boss(channel_id)
     lv_division = list(map(int, monsters.keys()))
+    boss_lv += level_up
     monster_division = monsters[str(max([i for i in lv_division if i <= (boss_lv - 1) % max(lv_division) + 1]))]
     monster = monster_division[0]
-    if monster_division[boss_id].get("canReset") == "True":
+    if monster_division[boss_id].get("canReset") == "True" or level_up:
         monster_details = random.choice(list(enumerate(monster_division[1:], 1)))
     else:
         monster_details = (boss_id, monster_division[boss_id])
