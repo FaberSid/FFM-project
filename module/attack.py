@@ -9,7 +9,7 @@ channel_in_transaction = []
 special_monster = {}
 
 
-class attack(c.Cog):
+class Attack(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -49,4 +49,4 @@ class attack(c.Cog):
             await ctx.send("{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, boss_level * 10 + 50, boss_attack_message))
 
 def setup(bot):
-    bot.add_cog(attack(bot))
+    bot.add_cog(Attack(bot))
