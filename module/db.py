@@ -24,7 +24,7 @@ def init():
                     boss_id BIGINT,\
                     boss_level BIGINT check(boss_level >= 0),\
                     boss_hp BIGINT check(boss_level >= 0),\
-                    PRIMARY KEY (channel_id, boss_id, boss_level)\
+                    PRIMARY KEY (channel_id)\
                 )")
     c.execute("create table if not exists item(\
                     item_id BIGINT,\
@@ -155,7 +155,9 @@ class boss_status:
     def set(channel_id, boss_id, boss_level, boss_hp):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
-        c.execute("INSERT INTO channel_status values( %s, %s, %s, %s)", (channel_id, boss_id, boss_level, boss_hp))
+        c.execute("INSERT INTO channel_status values( %s, %s, %s, %s) "
+                  "ON CONFLICT(channel_id) DO UPDATE SET boss_hp=%s",
+                  (channel_id, boss_id, boss_level, boss_hp, boss_hp))
         conn.commit()
 
     def update(boss_hp, channel_id):
