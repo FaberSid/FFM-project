@@ -26,6 +26,7 @@ class CmdNotFoundError(c.Cog):
         embed = Embed(description="発言元：[移動](https://discordapp.com/channels/"
                                   f"{ctx.guild.id}/{ctx.channel.id}/{ctx.message.id})")
         await ch.send("<@&599220739815505941>修正よろしくね！", embed=embed)
+        await ctx.send("発生したエラーは開発者に報告されました。")
 
 
 def setup(bot):
