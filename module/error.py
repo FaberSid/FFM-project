@@ -12,6 +12,9 @@ class CmdNotFoundError(c.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, c.errors.CommandNotFound):
             return
+        if isinstance(error, c.errors.DisabledCommand):
+            await ctx.send(Embed(description="実行したコマンドは開発中か諸事情により開発者が無効化しています"))
+            return
         a = traceback.format_exception(type(error), error, error.__traceback__)
         text = ""
         ch = self.bot.get_channel(597363081928245248)
