@@ -26,7 +26,9 @@ class Shop(c.Cog):
         return await ctx.send("""販売中のアイテム：\n{}""".format(item_list))
     
     @shop.command()
-    async def sell(self, ctx, item_name: str, cnt: int):
+    async def sell(self, ctx, item_name: str = None, cnt: int = 1):
+        if item_name is None:
+            return await ctx.send("アイテム名を指定してください")
         if cnt <= 0:
             return await ctx.send("数は1以上を指定してください")
         item_id = get_key_from_value(items, item_name)
@@ -53,13 +55,14 @@ class Shop(c.Cog):
             money = db.player.money.get(ctx.message.author.id)
             db.player.item.update_cnt(ctx.message.author.id, s_items[0], item_cnt-cnt)
             db.player.money.add(ctx.message.author.id, s_items[1]*cnt)
-            db.commit()
             await ctx.send(f"{item} {cnt}個を{s_items[1]*cnt}FGで売却しました。\nまたのお越しをお待ちしております")
         else:
             await ctx.send("またのお越しをお待ちしております")
 
     @shop.command()
-    async def buy(self, ctx, item_name: str, cnt: int):
+    async def buy(self, ctx, item_name: str = None, cnt: int = 1):
+        if item_name is None:
+            return await ctx.send("アイテム名を指定してください")
         if cnt <= 0:
             return await ctx.send("数は1以上を指定してください")
         item_id = get_key_from_value(items, item_name)
@@ -84,7 +87,6 @@ class Shop(c.Cog):
             item_cnt = db.player.item.get_cnt(ctx.message.author.id, s_items[0])
             db.player.money.pay(ctx.message.author.id, math.ceil(s_items[1]*cnt*1.2))
             db.player.item.update_cnt(ctx.message.author.id, s_items[0], item_cnt+cnt)
-            db.commit()
             await ctx.send(f"{item} {cnt}個を{math.ceil(s_items[1]*cnt*1.2)}FGで買いました。\nまたのお越しをお待ちしております")
         else:
             await ctx.send("またのお越しをお待ちしております")
