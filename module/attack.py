@@ -42,12 +42,12 @@ class Attack(c.Cog):
         attack_message = battle.get_attack_message(user_id, player_attack, monster_name, rand)
         if boss_hp <= 0:
             win_message = battle.win_process(channel_id, boss_level, monster_name)
-            await ctx.send(Embed(description="{}\n{}".format(attack_message, win_message)))
+            await ctx.send(embed=Embed(description="{}\n{}".format(attack_message, win_message)))
             await battle.reset_battle(ctx, channel_id, level_up=True)
         else:
             db.boss_status.update(boss_hp, channel_id)
             boss_attack_message = battle.boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id)
-            await ctx.send(Embed(description="{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, boss_level * 10 + 50, boss_attack_message)))
+            await ctx.send(embed=Embed(description="{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, boss_level * 10 + 50, boss_attack_message)))
 
 def setup(bot):
     bot.add_cog(Attack(bot))

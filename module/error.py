@@ -13,7 +13,7 @@ class CmdNotFoundError(c.Cog):
         if isinstance(error, c.errors.CommandNotFound):
             return
         if isinstance(error, c.errors.DisabledCommand):
-            await ctx.send(Embed(description="実行したコマンドは開発中か諸事情により開発者が無効化しています"))
+            await ctx.send(embed=Embed(description="実行したコマンドは開発中か諸事情により開発者が無効化しています"))
             return
         a = traceback.format_exception(type(error), error, error.__traceback__)
         text = ""
