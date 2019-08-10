@@ -180,15 +180,6 @@ class channel:
         c.execute("DELETE FROM in_battle WHERE channel_id=%s", (channel_id,))
         conn.commit()
 
-    def enemy_levelup(channel_id, boss_id, level_up=False):
-        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
-        c = conn.cursor()
-        query = "UPDATE channel_status SET {} WHERE channel_id=%s".format(
-            "boss_level=boss_level+1, boss_hp=boss_level*10+60" if level_up else "boss_hp=boss_level*10+50"
-        )
-        c.execute(query, (channel_id,))
-        conn.commit()
-
     def set_boss_id(channel_id, boss_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
