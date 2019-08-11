@@ -156,8 +156,8 @@ class boss_status:
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("INSERT INTO channel_status values( %s, %s, %s, %s) "
-                  "ON CONFLICT(channel_id) DO UPDATE SET boss_level=%s, boss_hp=%s",
-                  (channel_id, boss_id, boss_level, boss_hp, boss_level, boss_hp))
+                  "ON CONFLICT(channel_id) DO UPDATE SET boss_id=%s, boss_level=%s, boss_hp=%s",
+                  (channel_id, boss_id, boss_level, boss_hp, boss_id, boss_level, boss_hp))
         conn.commit()
 
     def update(boss_hp, channel_id):
@@ -178,15 +178,6 @@ class channel:
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("DELETE FROM in_battle WHERE channel_id=%s", (channel_id,))
-        conn.commit()
-
-    def enemy_levelup(channel_id, boss_id, level_up=False):
-        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
-        c = conn.cursor()
-        query = "UPDATE channel_status SET {} WHERE channel_id=%s".format(
-            "boss_level=boss_level+1, boss_hp=boss_level*10+60" if level_up else "boss_hp=boss_level*10+50"
-        )
-        c.execute(query, (channel_id,))
         conn.commit()
 
     def set_boss_id(channel_id, boss_id):

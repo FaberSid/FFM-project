@@ -167,7 +167,6 @@ def experiment(user_id, exp):
 async def reset_battle(ctx, channel_id, level_up=False):
     db.channel.end_battle(channel_id)
     # boss_max_hp
-    db.channel.enemy_levelup(channel_id, level_up)
     boss_lv, boss_hp, boss_id = get_boss(channel_id)
     lv_division = list(map(int, monsters.keys()))
     boss_lv += level_up
