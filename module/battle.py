@@ -92,7 +92,7 @@ def get_boss_attack(channel_id):
     boss_lv, _, boss_id = db.boss_status.get(channel_id)
     lv_division = list(map(int, monsters.keys()))
     monster_division = monsters[str(max([i for i in lv_division if i <= (boss_lv - 1) % max(lv_division) + 1]))]
-    monster = monster_division[0]
+    monster = monster_division[0].copy()
     monster_details = random.choice(list(enumerate(monster_division[1:], 1)))
     monster.update(monster_details[1])
     monster["ATK"] = monster["ATK"].replace("boss_level", str(boss_lv))
