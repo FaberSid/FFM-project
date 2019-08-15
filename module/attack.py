@@ -3,7 +3,6 @@ from discord import Embed
 from module import db
 import random
 from module import battle
-monsters = battle.monsters
 
 MONSTER_NUM = 50
 channel_in_transaction = []
@@ -38,7 +37,8 @@ class Attack(c.Cog):
         rand = random.random()
         player_attack = battle.get_player_attack(player_level, boss_level, rand)
         boss_hp = boss_hp - player_attack
-        monster_name = monsters[str(max(map(int,[i for i in monsters if int(i) <= boss_level])))][boss_id]["name"]
+        from module import monsters
+        monster_name = monsters.get(boss_level, boss_id)[1]["name"]
         attack_message = battle.get_attack_message(user_id, player_attack, monster_name, rand)
         if boss_hp <= 0:
             win_message = battle.win_process(channel_id, boss_level, monster_name)
