@@ -1,7 +1,7 @@
 import requests
 from discord.ext import commands as c
 from discord import Embed
-from module import battle, monsters
+from module import db, battle, monsters
 r = requests.get(f'{db.CONFIG_ROOT}/Discord/global_config/USERs.json')
 USERs = r.json()
 
