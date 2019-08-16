@@ -60,11 +60,8 @@ class Item(c.Cog):
         boss_lv, boss_hp, boss_id = battle.get_boss(channel_id)
         player_attack = int(player_level * (1 + random.random()) / 10)
         boss_hp = boss_hp - player_attack
-        lv_division = list(map(int, battle.monsters.keys()))
-        monster_division = battle.monsters[str(max([i for i in lv_division if i <= (boss_lv-1) % max(lv_division)+1]))]
-        monster = monster_division[0]
-        monster_details = (boss_id, monster_division[boss_id])
-        monster.update(monster_details[1])
+        from module import monsters
+        monster = monsters.get(boss_lv, boss_id)[1]
         monster_name = monster["name"]
         attack_message = "ファイアボール！<@{}>は{}に`{}`のダメージを与えた！".format(user_id, monster_name, player_attack)
         if boss_hp <= 0:
