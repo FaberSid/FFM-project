@@ -42,15 +42,12 @@ def get_boss(channel_id):
     channel_status = db.boss_status.get(channel_id)
     if not channel_status:
         from module import str_calc
-        boss_Lv = 1
-        Lv_division = list(map(int, monsters.keys()))
-        monster_division = monsters[str(max([i for i in Lv_division if i <= (boss_Lv-1) % max(Lv_division)+1]))]
-        monster = monster_division[0]
-        monster_details = random.choice(list(enumerate(monster_division[1:], 1)))
-        monster.update(monster_details[1])
-        monster["HP"] = monster["HP"].replace("boss_level", str(boss_Lv))
-        db.boss_status.set(channel_id, monster_details[0], boss_Lv, str_calc.calc(monster["HP"]))
-        channel_status = [boss_Lv, str_calc.calc(monster["HP"]), monster_details[0]]
+        boss_lv = 1
+        from module import monsters
+        monster = monsters.get(boss_lv)
+        monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_lv))
+        db.boss_status.set(channel_id, monster[0], boss_lv, str_calc.calc(monster[1]["HP"]))
+        channel_status = [boss_lv, str_calc.calc(monster[1]["HP"]), monster[0]]
     return channel_status
 
 
