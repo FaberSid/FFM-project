@@ -250,7 +250,8 @@ class prefix:
     def register(self, prefix_str):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
-        c.execute("INSERT INTO prefix VALUES(%s, %s)", (self.guild.id, prefix_str))
+        c.execute("INSERT INTO prefix VALUES(%s, %s) ON CONFLICT(g_id) DO UPDATE SET prefix=%s",
+                  (self.guild.id, prefix_str, prefix_str))
         conn.commit()
         c.close()
         conn.close()
