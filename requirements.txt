@@ -1,3 +1,4 @@
+psutil
 discord.py[voice]
 requests
 psycopg2
