@@ -33,9 +33,13 @@ class Shop(c.Cog):
         if cnt <= 0:
             return await ctx.send("数は1以上を指定してください")
         item_id = get_key_from_value(items, item_name)
+        if item_id is None:
+            return await ctx.send(f"{item_name}は売ることができない")
         s_items = [item_id, items[str(item_id)]["name"], items[str(item_id)]["sell"]]
         item_cnt = db.player.item.get_cnt(ctx.message.author.id, s_items[0])
-        if not item_cnt:
+        if s_items[2] is None:
+            return await ctx.send(f"{s_items[1]}は売ることができない")
+        elif not item_cnt:
             return await ctx.send(f"<@{ctx.message.author.id}>は{s_items[1]}を持っていない")
         elif item_cnt < cnt:
             return await ctx.send(f"所持数が足りない")
@@ -66,8 +70,12 @@ class Shop(c.Cog):
         if cnt <= 0:
             return await ctx.send("数は1以上を指定してください")
         item_id = get_key_from_value(items, item_name)
+        if item_id is None:
+            return await ctx.send(f"{item_name}は買うことができない")
         s_items = [item_id, items[str(item_id)]["name"], items[str(item_id)]["buy"]]
         money = db.player.money.get(ctx.message.author.id)
+        if s_items[2] is None:
+            return await ctx.send(f"{s_items[1]}は買うことができない")
         if money < s_items[2] * cnt:
             return await ctx.send(f"お金が足りない")
         msg = await ctx.send(f"{s_items[1]} {cnt}個を{s_items[2] * cnt}FGで買いますか？")
