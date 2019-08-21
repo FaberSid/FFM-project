@@ -60,19 +60,19 @@ class player:
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
             c = conn.cursor()
             c.execute("SELECT money FROM player WHERE user_id=%s", (user_id,))
-            c.close()
-            conn.close()
             return c.fetchone()[0]
 
         def add(user_id, money):
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
             c = conn.cursor()
             c.execute("UPDATE player SET money=money+%s WHERE user_id=%s", (money, user_id))
+            conn.commit()
 
         def pay(user_id, money):
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
             c = conn.cursor()
             c.execute("UPDATE player SET money=money-%s WHERE user_id=%s", (money, user_id))
+            conn.commit()
 
     class experience:
         def get(user_id):

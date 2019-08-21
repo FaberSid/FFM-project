@@ -53,7 +53,6 @@ class Shop(c.Cog):
         except asyncio.TimeoutError:
             return await ctx.send("またのお越しをお待ちしております")
         if reaction.emoji == '✅':
-            money = db.player.money.get(ctx.message.author.id)
             db.player.item.update_cnt(ctx.message.author.id, s_items[0], item_cnt - cnt)
             db.player.money.add(ctx.message.author.id, s_items[2] * cnt)
             await ctx.send(f"{s_items[1]} {cnt}個を{s_items[2] * cnt}FGで売却しました。\nまたのお越しをお待ちしております")
@@ -71,7 +70,6 @@ class Shop(c.Cog):
         money = db.player.money.get(ctx.message.author.id)
         if money < s_items[1] * cnt:
             return await ctx.send(f"お金が足りない")
-        item = items[s_items[0]]
         msg = await ctx.send(f"{s_items[1]} {cnt}個を{s_items[2] * cnt}FGで買いますか？")
         await msg.add_reaction("✅")
         await msg.add_reaction("❌")
