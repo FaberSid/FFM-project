@@ -32,18 +32,12 @@ def init():
                     count BIGINT check(count >= 0),\
                     primary key(item_id, user_id)\
                 )")
-    c.execute("create table if not exists shop_trade(item_id BIGINT unique,sell BIGINT)")
     c.execute("create table if not exists prefix(g_id bigserial unique,prefix text)")
     c.execute("create table if not exists account(\
                     user_id BIGINT CONSTRAINT account_user_id_key unique,\
                     hash text,\
                     msg_id BIGINT\
                 )")
-    for data in [(1, 100), (2, 1), (3, 1), (4, 10)]:
-        try:
-            c.execute("INSERT INTO shop_trade VALUES (%s, %s) ON CONFLICT DO NOTHING", data)
-        except:# sqlite3.IntegrityError:
-            pass
     conn.commit()
     c.close()
     conn.close()
@@ -206,19 +200,6 @@ class channel:
 
 
 class shop:
-    class rate:
-        def all():
-            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
-            c = conn.cursor()
-            c.execute("SELECT * FROM shop_trade")
-            return c.fetchall()
-
-        def select(item_id):
-            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
-            c = conn.cursor()
-            c.execute("SELECT * FROM shop_trade WHERE item_id=%s", (item_id,))
-            return c.fetchone()
-
     def sell(user_id, s_id, s_cnt, money):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()

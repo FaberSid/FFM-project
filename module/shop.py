@@ -1,9 +1,8 @@
 import asyncio
 import math
 from discord.ext import commands as c
-from module import db
-
-items = {-10: "運営の証", -9: "サポーターの証", 1: "エリクサー", 2: "ファイアボールの書", 3: "祈りの書", 4: "解毒剤",}
+from module import db, item
+items = item.items
 
 
 class Shop(c.Cog):
@@ -21,8 +20,10 @@ class Shop(c.Cog):
 
     @shop.command()
     async def rate(self, ctx):
-        s_items = db.shop.rate.all()
-        item_list = "\n".join("{} : 売{}FG、買{}FG".format(items[i[0]], i[1], math.ceil(i[1]*1.2)) for i in s_items)
+        item_list = "\n".join("{} : {}{}{}".format(i["name"], f"売{i['sell']}FG"*(i['sell'] is not None),
+                                                   "、" * (not(i["buy"] is None and i["sell"] is None)),
+                                                   f"買{i['buy']}FG"*(i['buy'] is not None))
+                              for i in items.values() if not(i["sell"] is None and i["buy"] is None))
         return await ctx.send("""販売中のアイテム：\n{}""".format(item_list))
     
     @shop.command()
@@ -32,14 +33,13 @@ class Shop(c.Cog):
         if cnt <= 0:
             return await ctx.send("数は1以上を指定してください")
         item_id = get_key_from_value(items, item_name)
-        s_items = db.shop.rate.select(item_id)
+        s_items = [item_id, items[str(item_id)]["name"]]
         item_cnt = db.player.item.get_cnt(ctx.message.author.id, s_items[0])
         if not item_cnt:
-            return await ctx.send(f"<@{ctx.message.author.id}>は{item}を持っていない")
+            return await ctx.send(f"<@{ctx.message.author.id}>は{items[str(item_id)]['name']}を持っていない")
         elif item_cnt < cnt:
             return await ctx.send(f"所持数が足りない")
-        item = items[s_items[0]]
-        msg = await ctx.send(f"{item} {cnt}個を{s_items[1]*cnt}FGで売却しますか？")
+        msg = await ctx.send(f"{items[str(item_id)]['name']} {cnt}個を{s_items[1]*cnt}FGで売却しますか？")
         await msg.add_reaction("✅")
         await msg.add_reaction("❌")
 
@@ -66,7 +66,7 @@ class Shop(c.Cog):
         if cnt <= 0:
             return await ctx.send("数は1以上を指定してください")
         item_id = get_key_from_value(items, item_name)
-        s_items = db.shop.rate.select(item_id)
+        s_items = [item_id, items[str(item_id)]["name"]]
         money = db.player.money.get(ctx.message.author.id)
         if money < s_items[1]*cnt:
             return await ctx.send(f"お金が足りない")
