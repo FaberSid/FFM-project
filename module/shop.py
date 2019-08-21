@@ -68,7 +68,7 @@ class Shop(c.Cog):
         item_id = get_key_from_value(items, item_name)
         s_items = [item_id, items[str(item_id)]["name"], items[str(item_id)]["buy"]]
         money = db.player.money.get(ctx.message.author.id)
-        if money < s_items[1] * cnt:
+        if money < s_items[2] * cnt:
             return await ctx.send(f"お金が足りない")
         msg = await ctx.send(f"{s_items[1]} {cnt}個を{s_items[2] * cnt}FGで買いますか？")
         await msg.add_reaction("✅")
