@@ -1,16 +1,17 @@
-from discord.ext import commands as c
-from module import db
-import discord
 import math
 import random
-from module import battle
+import discord
+import requests
+from discord.ext import commands as c
+from module import battle, db
 
-items = {-10: "運営の証", -9: "サポーターの証", 1: "エリクサー", 2: "ファイアボールの書", 3: "祈りの書", 4: "解毒剤",}
+r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/items.json')
+items = r.json()
+
 item_description = """アイテムの説明
 エリクサー:チャンネルの全員を全回復させる。
 ファイアボールの書:遠隔攻撃する。
 祈りの書:仲間一人を復活させる。
-サポーターの証:MMOくんをサポートしてくれた証だ！
 """
 MONSTER_NUM = 50
 channel_in_transaction = []
@@ -20,7 +21,7 @@ special_monster = {}
 class Item(c.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @c.group(aliases=['i'], pass_context=True, description=item_description)
     async def item(self, ctx):
         channel_id = ctx.message.channel.id
@@ -31,7 +32,7 @@ class Item(c.Cog):
             user_id = ctx.message.author.id
             if ctx.invoked_subcommand is None:
                 my_items = db.player.item.get_list(user_id)
-                item_list = "\n".join("{} : {}個".format(items[i[0]], i[1]) for i in my_items)
+                item_list = "\n".join("{} : {}個".format(items[str(i[0])]["name"], i[1]) for i in my_items)
                 return await ctx.send("""<@{}>が所有するアイテム：\n{}""".format(user_id, item_list))
         finally:
             channel_in_transaction.remove(channel_id)
