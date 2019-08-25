@@ -6,13 +6,25 @@ r = requests.get(f'{db.CONFIG_ROOT}/Discord/FFM/assets/monsters.json')
 monsters = r.json()
 
 
+def init():
+    global monsters
+    if all((i in monsters.keys()) for i in ["default", "monsters"]):
+        return
+    for m_key in monsters["monsters"].keys():
+        for i, v in enumerate(monsters["monsters"][m_key]):
+            monster = monsters["default"].copy()
+            monster.update(v)
+            monsters["monsters"][m_key][i] = monster
+    monsters = monsters["monsters"]
+
+
 def get(boss_lv=1, boss_id=None):
-    Lv_division = list(map(int, monsters["monsters"].keys()))
-    monster_division = monsters["monsters"][str(max([i for i in Lv_division if i <= (boss_lv - 1) % max(Lv_division) + 1]))]
-    monster = monsters["default"].copy()
+    monster_division = monsters[str(max(i for i in map(int, monsters.keys()) if boss_lv % i == 0))]
     if boss_id is None:
-        monster_details = random.choice(list(enumerate(monster_division)))
+        monster = random.choice(list(enumerate(monster_division)))
     else:
-        monster_details = (boss_id, monster_division[boss_id])
-    monster.update(monster_details[1])
-    return monster_details[0], monster
+        monster = (boss_id, monster_division[boss_id])
+    return monster
+
+
+init()
