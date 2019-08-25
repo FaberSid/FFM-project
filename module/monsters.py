@@ -21,7 +21,8 @@ def init():
 def get(boss_lv=1, boss_id=None):
     monster_division = monsters[str(max(i for i in map(int, monsters.keys()) if boss_lv % i == 0))]
     if boss_id is None:
-        monster = random.choice(list(enumerate(monster_division)))
+        monster = random.choices(list(enumerate(monster_division)),
+                                 weights=[i["encounter rate"] for i in monster_division])[0]
     else:
         monster = (boss_id, monster_division[boss_id])
     return monster
