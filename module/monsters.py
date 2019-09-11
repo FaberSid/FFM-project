@@ -8,7 +8,7 @@ monsters = r.json()
 
 def init():
     global monsters
-    if all((i in monsters.keys()) for i in ["default", "monsters"]):
+    if all(i.isdecimal() for i in monsters.keys()):
         return
     for m_key in monsters["monsters"].keys():
         for i, v in enumerate(monsters["monsters"][m_key]):
