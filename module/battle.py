@@ -1,6 +1,6 @@
 from discord.ext import commands as c
 import discord
-from module import db, item, monsters
+from module import db, item, monsters, str_calc
 import random
 import math
 MONSTER_NUM = 50
@@ -53,7 +53,7 @@ def get_boss(channel_id):
 
 def get_player_attack(player_level, boss_level, boss_id, rand):
     boss = monsters.get(boss_level, boss_id)
-    if rand < boss["Evasion rate"]:
+    if rand < boss[1]["Evasion rate"]:
         player_attack = 0
     elif boss_level % MONSTER_NUM in [3, 11, 17, 32, 41]:
         plus = rand / 3 + 0.5 if rand < 0.96 else 3
