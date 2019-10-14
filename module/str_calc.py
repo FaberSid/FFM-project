@@ -11,7 +11,8 @@ def calc(s):
         'rndf': (lambda x, y: random.uniform(x, y)),
         'rnd': (lambda: random.random()),
         'eq': (lambda x, y: x == y),
-        'int': (lambda x: int(x))
+        'int': (lambda x: int(x)),
+        'if': (lambda x, y, z:y if x else z)
     }
     stack = []
     for z in s.split():
@@ -21,6 +22,7 @@ def calc(s):
         argv = []
         for _ in range(len(signature(operator[z]).parameters)):
             argv.append(stack.pop())
+        argv.reverse()
         stack.append(operator[z](*argv))
     try:
         stack[0] = int(stack[0])

@@ -35,7 +35,7 @@ class Attack(c.Cog):
         player_level = battle.get_player_level(user_id)
         boss_level, boss_hp, boss_id = battle.get_boss(channel_id)
         rand = random.random()
-        player_attack = battle.get_player_attack(player_level, boss_level, rand)
+        player_attack = battle.get_player_attack(player_level, boss_level, boss_id, rand)
         boss_hp = boss_hp - player_attack
         from module import monsters
         monster_name = monsters.get(boss_level, boss_id)[1]["name"]
