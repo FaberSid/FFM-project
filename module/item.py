@@ -32,7 +32,7 @@ class Item(c.Cog):
             user_id = ctx.message.author.id
             if ctx.invoked_subcommand is None:
                 my_items = db.player.item.get_list(user_id)
-                item_list = "\n".join("{} : {}個".format(items[str(i[0])]["name"], i[1]) for i in my_items)
+                item_list = "\n".join("{} : {}個".format(items.get(str(i[0]),{"name": "unknown"})["name"], i[1]) for i in my_items)
                 return await ctx.send("""<@{}>が所有するアイテム：\n{}""".format(user_id, item_list))
         finally:
             channel_in_transaction.remove(channel_id)
