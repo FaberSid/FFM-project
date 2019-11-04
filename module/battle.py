@@ -123,13 +123,13 @@ def win_process(channel_id, boss_level, monster_name):
         p = min(0.02 * boss_level * boss_level / get_player_exp(member_id), 0.1)
         if boss_level % 50 == 0 and random.random() < p:
             elixir_members += "<@{}> ".format(member_id)
-            item.consume_an_item(member_id, 1)
+            item.obtain_an_item(member_id, 1)
         if random.random() < p:
             fire_members += "<@{}> ".format(member_id)
-            item.consume_an_item(member_id, 2)
+            item.obtain_an_item(member_id, 2)
         if random.random() < p * 2:
             pray_members += "<@{}> ".format(member_id)
-            item.consume_an_item(member_id, 3)
+            item.obtain_an_item(member_id, 3)
     if fire_members:
         fire_members += "は`ファイアボールの書`を手に入れた！"
     if elixir_members:
