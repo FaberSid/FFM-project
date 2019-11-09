@@ -207,7 +207,8 @@ class channel:
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("DELETE FROM in_battle WHERE channel_id=%s", (b_ch,))
-        c.execute("INSERT INTO in_battle values(%s,%s,%s,0)", (a_ch, user_id, player_hp))
+        c.execute("INSERT INTO in_battle values(%s,%s,%s,0)", (user_id, a_ch, player_hp))
+        conn.commit()
 
     @staticmethod
     def is_battle(channel_id):
