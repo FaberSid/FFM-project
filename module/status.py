@@ -30,8 +30,9 @@ class Status(c.Cog):
             value = "\n".join("{} : {}個".format(items.get(str(i[0]),{"name": "unknown"})["name"], i[1]) for i in my_items)
         else:
             value = "何も持っていない"
-        embed.add_field(name="item", value=value)
+        embed.add_field(name="item", value=">>> "+value)
         embed.add_field(name="倒した敵の数", value="追加予定")
+        embed.add_field(name="状態", value="追加予定")
         await ctx.send(embed=embed)
 
 def setup(bot):
