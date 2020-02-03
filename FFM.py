@@ -28,8 +28,8 @@ class MyBot(c.Bot):
                 print(f'NoEntryPoint  :module.{p.stem}')
         print('------')
 
-    async def on_guild_remove(guild):
-        db.guild_remove(guild)
+    #async def on_guild_remove(self, guild):
+    #    db.guild_remove(guild)
 
 
 bot = MyBot(command_prefix=table)
