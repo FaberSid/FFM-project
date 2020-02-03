@@ -51,7 +51,7 @@ class Attack(c.Cog):
             boss_attack_message = battle.boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id)
             monster = monsters.get(boss_level, boss_id)
             monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_level))
-            if ctx.channel.id==673824202201104415:await ctx.send(f"2:{monster[1]["HP"]}")
+            if ctx.channel.id==673824202201104415:await ctx.send(f"2:{monster[1]['HP']}")
             await ctx.send(embed=Embed(description="{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, calc(monster[1]["HP"]), boss_attack_message)))
 
 def setup(bot):
