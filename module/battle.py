@@ -164,6 +164,10 @@ async def reset_battle(ctx, channel_id, level_up=False):
     monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_lv))
     db.boss_status.set(channel_id, monster[0], boss_lv,  calc(monster[1]["HP"]))
     if ctx.channel.id==673824202201104415:await ctx.send(f"1:{monster[1]['HP']}")
+    if ctx.channel.id==673824202201104415:await ctx.send(f"1:{monster[1]['HP']}")
+    em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}[{}]".
+                       format(monster[1]["name"], boss_lv, calc(monster[1]["HP"]), monster[1]["HP"]))
+    await ctx.bot.get_channel(673824202201104415).send(embed=em)
     em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".
                        format(monster[1]["name"], boss_lv, calc(monster[1]["HP"])))
     em.set_image(url=f"{db.CONFIG_ROOT}Discord/FFM/img/{monster[1].get('img','404.png')}")

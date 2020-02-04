@@ -24,25 +24,23 @@ class Quiz(c.Cog):
         await ctx.send("Q. {}\n 1. {}\n 2. {}\n 3. {}\n 4. {}".format(quiz_xml[1].text, *quiz_set))
         answer_num = quiz_set.index(quiz_xml[2].text) + 1
         exp = math.ceil(get_player_level(user.id) / 10)
-        ischeat=False
+        ischeat=[False]
+        def cheat(m):ischeat[0]=True-(m.author.id==574476415467257866)/5;return False
         try:
-            guess = await self.bot.wait_for('message',timeout=12.0, check=(lambda m:m.content==answer_num and m.author!=user or m.author==user))
-            if guess.author != user:
-                ischeat = True-(guess.author.id==574476415467257866)/5
-                guess = await self.bot.wait_for('message',timeout=6.0, check=(lambda m:m.author==user))
+            guess = await self.bot.wait_for('message',timeout=12.0, check=(lambda m:m.content==answer_num and m.author!=user and cheat(m) or m.author==user))
         except asyncio.TimeoutError:
             await ctx.send('時間切れだ。正解は「{}」だ。'.format(quiz_xml[2].text))
             return
-        if ischeat:exp=math.ceil(exp/10)
+        if ischeat[0]:exp=math.ceil(exp/10)
         if guess.content.isdigit() and int(guess.content) == answer_num:
             comment = experiment(user.id, exp)
-            if random.random() < 0.005/(ischeat*9+1):
+            if random.random() < 0.005/(ischeat[0]*9+1):
                 comment += "\n`エリクサー`を手に入れた！"
                 item.obtain_an_item(user.id, 1)
-            if random.random() < 0.1/(ischeat*9+1):
+            if random.random() < 0.1/(ischeat[0]*9+1):
                 comment += "\n`ファイアボールの書`を手に入れた！"
                 item.obtain_an_item(user.id, 2)
-            if random.random() < 0.1/(ischeat*9+1):
+            if random.random() < 0.1/(ischeat[0]*9+1):
                 comment += "\n`祈りの書`を手に入れた！"
                 item.obtain_an_item(user.id, 3)
             await ctx.send('正解だ！{}の経験値を得た。\n{}'.format(exp, comment))
