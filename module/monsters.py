@@ -24,7 +24,11 @@ def get(boss_lv=1, boss_id=None):
         monster = random.choices(list(enumerate(monster_division)),
                                  weights=[i["encounter rate"] for i in monster_division])[0]
     else:
-        monster = (boss_id, monster_division[boss_id])
+        try:
+            monster = (boss_id, monster_division[boss_id])
+        except:
+            print("ERROR boss_id: ",boss_id)
+            return None
     return monster
 
 
