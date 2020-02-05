@@ -30,7 +30,7 @@ class CmdNotFoundError(c.Cog):
             embed = Embed(description="発言元：[移動](https://discordapp.com/channels/"
                                     f"{ctx.guild.id}/{ctx.channel.id}/{ctx.message.id})")
             await ch.send("<@&599220739815505941>修正よろしくね！", embed=embed)
-            await ch.send(f"```{dir(error.args)}```")
+            await ch.send(f"```{error.args}\n{dir(error.args)}```")
             await ctx.send("発生したエラーは開発者が調査中です")
             return
         a = traceback.format_exception(type(error), error, error.__traceback__)
