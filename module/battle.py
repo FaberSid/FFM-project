@@ -167,6 +167,8 @@ async def reset_battle(ctx, channel_id, level_up=False):
     if ctx.channel.id==673824202201104415:await ctx.send(f"1:{monster[1]['HP']}")
     em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}[{}]".
                        format(monster[1]["name"], boss_lv, calc(monster[1]["HP"]), monster[1]["HP"]))
+    em.add_field(name="boss_lv, boss_hp, boss_id",value=f"{(boss_lv, boss_hp, boss_id)}")
+    em.add_field(name="monster",value=f"{monster}\n{monsters.get(boss_lv, boss_id)}")
     await ctx.bot.get_channel(673824202201104415).send(embed=em)
     em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".
                        format(monster[1]["name"], boss_lv, calc(monster[1]["HP"])))
