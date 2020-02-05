@@ -27,8 +27,8 @@ class CmdNotFoundError(c.Cog):
                     await ch.send(f"```py\n{text}```")
                     text = x
             await ch.send(f"```py\n{text}```")
-            embed = Embed(description="発言元：[移動](https://discordapp.com/channels/"
-                                    f"{ctx.guild.id}/{ctx.channel.id}/{ctx.message.id})")
+            embed = Embed(description=f"発言元：[移動](https://discordapp.com/channels/{ctx.guild.id}/{ctx.channel.id}/{ctx.message.id})\n"
+                                      f"チャンネル：<#{ctx.channel.id}>\n")
             await ch.send("<@&599220739815505941>修正よろしくね！", embed=embed)
             await ch.send(f"```{error.args}\n{dir(error.args)}```")
             await ctx.send("発生したエラーは開発者が調査中です")
