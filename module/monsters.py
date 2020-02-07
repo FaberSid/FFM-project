@@ -1,6 +1,7 @@
 import requests
 import random
 from module import db
+import copy
 
 r = requests.get(f'{db.CONFIG_ROOT}/Discord/FFM/assets/monsters.json')
 monsters = r.json()
@@ -29,7 +30,7 @@ def get(boss_lv=1, boss_id=None):
         except:
             print("ERROR boss_id: ",boss_id)
             return None
-    return monster
+    return copy.deepcopy(monster)
 
 
 init()
