@@ -1,11 +1,12 @@
-from discord.ext import commands as c
-import discord
-import requests
+import asyncio
 import math
 import random
-from module import db, item
-import asyncio
 
+import discord
+import requests
+from discord.ext import commands as c
+
+from module import db, item
 
 r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/training.json')
 training_set = r.json()
@@ -22,7 +23,7 @@ class Training(c.Cog):
         if user.bot:
             return
         q_id = random.randint(0, 619)
-        await ctx.send(embed=discord.Embed(description="「{}」の読み方をひらがなで答えなさい。".format(training_set[q_id][0])))
+        await ctx.send(embed=discord.Embed(description="「{}」の読み方をひらがなで答えなさい。".format(training_set[q_id][0])).set_author(name="四字熟語トレーニング"))
         answer = training_set[q_id][1]
         exp = math.ceil(get_player_level(user.id) / 8)
         ischeat=[False]

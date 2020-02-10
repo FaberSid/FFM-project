@@ -1,9 +1,12 @@
 import asyncio
 import math
 import random
-import requests
 from xml.etree import ElementTree
+
+import discord
+import requests
 from discord.ext import commands as c
+
 from module import db, item
 
 
@@ -21,7 +24,7 @@ class Quiz(c.Cog):
         quiz_xml = ElementTree.fromstring(resp.text.encode('utf-8'))[1]
         quiz_set = [quiz_xml[2].text, quiz_xml[3].text, quiz_xml[4].text, quiz_xml[5].text]
         random.shuffle(quiz_set)
-        await ctx.send(embed=discord.Embed(description="Q. {}\n 1. {}\n 2. {}\n 3. {}\n 4. {}".format(quiz_xml[1].text, *quiz_set)))
+        await ctx.send(embed=discord.Embed(description="Q. {}\n 1. {}\n 2. {}\n 3. {}\n 4. {}".format(quiz_xml[1].text, *quiz_set)).set_author(name="４択クイズ"))
         answer_num = quiz_set.index(quiz_xml[2].text) + 1
         exp = math.ceil(get_player_level(user.id) / 10)
         ischeat=[False]
