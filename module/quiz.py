@@ -30,7 +30,7 @@ class Quiz(c.Cog):
         ischeat=[False]
         def cheat(m):ischeat[0]=True-(m.author.id==574476415467257866)/5;return False
         try:
-            guess = await self.bot.wait_for('message',timeout=12.0, check=(lambda m:m.content==answer_num and m.author!=user and cheat(m) or m.author==user))
+            guess = await self.bot.wait_for('message',timeout=12.0, check=(lambda m:m.content==str(answer_num) and m.author!=user and cheat(m) or m.author==user))
         except asyncio.TimeoutError:
             await ctx.send(embed=discord.Embed(description='時間切れだ。正解は「{}」だ。'.format(quiz_xml[2].text)))
             return
