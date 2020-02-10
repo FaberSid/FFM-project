@@ -24,11 +24,11 @@ class Quiz(c.Cog):
         quiz_xml = ElementTree.fromstring(resp.text.encode('utf-8'))[1]
         quiz_set = [quiz_xml[2].text, quiz_xml[3].text, quiz_xml[4].text, quiz_xml[5].text]
         random.shuffle(quiz_set)
-        await ctx.send(embed=discord.Embed(description="Q. {}\n 1. {}\n 2. {}\n 3. {}\n 4. {}".format(quiz_xml[1].text, *quiz_set)).set_author(name="４択クイズ"))
         answer_num = quiz_set.index(quiz_xml[2].text) + 1
         exp = math.ceil(get_player_level(user.id) / 10)
         ischeat=[False]
         def cheat(m):ischeat[0]=True-(m.author.id==574476415467257866)/5;return False
+        await ctx.send(embed=discord.Embed(description="Q. {}\n 1. {}\n 2. {}\n 3. {}\n 4. {}".format(quiz_xml[1].text, *quiz_set)).set_author(name="４択クイズ"))
         try:
             guess = await self.bot.wait_for('message',timeout=12.0, check=(lambda m:m.content==str(answer_num) and m.author!=user and cheat(m) or m.author==user))
         except asyncio.TimeoutError:

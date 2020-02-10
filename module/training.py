@@ -23,11 +23,11 @@ class Training(c.Cog):
         if user.bot:
             return
         q_id = random.randint(0, 619)
-        await ctx.send(embed=discord.Embed(description="「{}」の読み方をひらがなで答えなさい。".format(training_set[q_id][0])).set_author(name="四字熟語トレーニング"))
         answer = training_set[q_id][1]
         exp = math.ceil(get_player_level(user.id) / 8)
         ischeat=[False]
         def cheat(m):ischeat[0]=True-(m.author.id==574476415467257866)/5;return False
+        await ctx.send(embed=discord.Embed(description="「{}」の読み方をひらがなで答えなさい。".format(training_set[q_id][0])).set_author(name="四字熟語トレーニング"))
         try:
             guess = await self.bot.wait_for('message',timeout=12.0, check=(lambda m:m.content==answer and m.author!=user and cheat(m) or m.author==user))
         except asyncio.TimeoutError:
