@@ -33,7 +33,7 @@ class Training(c.Cog):
         except asyncio.TimeoutError:
             await ctx.send(embed=discord.Embed(description='時間切れだ。正解は「{}」だ。'.format(answer)))
             return
-        if ischeat[0]:exp=math.ceil(exp/10)
+        exp=int(exp/(pow(ischeat[0],10)*3+1))
         if guess.content == answer:
             comment = experiment(user.id, exp)
             if random.random() < 0.005/(ischeat[0]*9+1):
