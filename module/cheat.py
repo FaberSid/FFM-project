@@ -1,6 +1,7 @@
 import requests
 from discord.ext import commands as c
 from discord import Embed
+import re
 from module import db, battle, monsters
 r = requests.get(f'{db.CONFIG_ROOT}/Discord/global_config/USERs.json')
 USERs = r.json()
@@ -32,6 +33,17 @@ class Cheat(c.Cog):
         if all((x in USERs.get(str(ctx.author.id), [])) for x in ["Cheater", "Debugger"]):
             boss_level, _, boss_id = battle.get_boss(ctx.channel.id)
             await ctx.send(str(monsters.get(boss_level, boss_id)), delete_after=10)
+    
+    @cheat.command(description='経験値配布などで使います。')
+    async def exp(self, ctx, num: int=None, *users):
+        if all((x in USERs.get(str(ctx.author.id), [])) for x in ["Cheater", "Debugger"]):
+            for u in users:
+                try:
+                    u_id = re.search('([0-9]+)' , u)[0]
+                except TypeError:
+                    continue
+                xp = db.player.experience.get(u_id)
+                db.player.experience.update(u_id, max(0, xp+num))
 
 
 def setup(bot):

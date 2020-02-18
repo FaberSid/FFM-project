@@ -101,7 +101,7 @@ class Shop(c.Cog):
 
 
 def get_key_from_value(d, val):
-    keys = [k for k, v in d.items() if val == v["name"]]
+    keys = [k for k, v in d.items() if val == v.get("name")]
     if keys:
         return keys[0]
     return None

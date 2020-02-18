@@ -29,11 +29,15 @@ class Item(c.Cog):
             return await ctx.send("`アイテム使用失敗。ゆっくりコマンドを打ってね。`")
         try:
             channel_in_transaction.append(channel_id)
-            user_id = ctx.message.author.id
+            user = ctx.message.author
             if ctx.invoked_subcommand is None:
-                my_items = db.player.item.get_list(user_id)
-                item_list = "\n".join("{} : {}個".format(items[str(i[0])]["name"], i[1]) for i in my_items)
-                return await ctx.send("""<@{}>が所有するアイテム：\n{}""".format(user_id, item_list))
+                my_items = db.player.item.get_list(user.id)
+                item_list = "\n".join("{} : {}個".format(items.get(str(i[0]),{"name": "unknown"})["name"], i[1]) for i in my_items)
+                if my_items:
+                    embed = discord.Embed(title=f"{user.display_name}が所有するアイテム",description=item_list)
+                else:
+                    embed = discord.Embed(description=f"{user.display_name}はアイテムを何も持っていない")
+                return await ctx.send(embed=embed)
         finally:
             channel_in_transaction.remove(channel_id)
 

@@ -1,6 +1,6 @@
 from discord.ext import commands as c
 import discord
-from module import db, item
+from module import db, item, monsters, str_calc
 import random
 import math
 MONSTER_NUM = 50
@@ -51,12 +51,9 @@ def get_boss(channel_id):
     return channel_status
 
 
-def get_player_attack(player_level, boss_level, rand):
-    if boss_level % MONSTER_NUM in [20, 40] and rand < 0.1:
-        player_attack = 0
-    elif boss_level % MONSTER_NUM in [2, 7, 13, 23, 34] and rand < 0.05:
-        player_attack = 0
-    elif rand < 0.01:
+def get_player_attack(player_level, boss_level, boss_id, rand):
+    boss = monsters.get(boss_level, boss_id)
+    if rand < boss[1]["Evasion rate"]:
         player_attack = 0
     elif boss_level % MONSTER_NUM in [3, 11, 17, 32, 41]:
         plus = rand / 3 + 0.5 if rand < 0.96 else 3
@@ -126,13 +123,13 @@ def win_process(channel_id, boss_level, monster_name):
         p = min(0.02 * boss_level * boss_level / get_player_exp(member_id), 0.1)
         if boss_level % 50 == 0 and random.random() < p:
             elixir_members += "<@{}> ".format(member_id)
-            item.consume_an_item(member_id, 1)
+            item.obtain_an_item(member_id, 1)
         if random.random() < p:
             fire_members += "<@{}> ".format(member_id)
-            item.consume_an_item(member_id, 2)
+            item.obtain_an_item(member_id, 2)
         if random.random() < p * 2:
             pray_members += "<@{}> ".format(member_id)
-            item.consume_an_item(member_id, 3)
+            item.obtain_an_item(member_id, 3)
     if fire_members:
         fire_members += "は`ファイアボールの書`を手に入れた！"
     if elixir_members:
@@ -141,7 +138,7 @@ def win_process(channel_id, boss_level, monster_name):
         pray_members += "は`祈りの書`を手に入れた！"
     level_up_comment = "\n".join([c for c in level_up_comments if c])
     item_get = "\n".join(c for c in [elixir_members, fire_members, pray_members] if c)
-    msg="{0}を倒した！\n\n{1}は`{2}`の経験値を得た。{3}\n{4}".format(monster_name, members, exp, level_up_comment, item_get)
+    msg="{0}を倒した！\n\n{1}は`{2}`の経験値を得た。\n{3}\n{4}".format(monster_name, members, exp, level_up_comment, item_get)
     return ("勝利メッセージが2000文字を超えたので表示できません" if len(msg)>2000 else msg)
 
 

@@ -9,7 +9,7 @@ def table(bot, message):
     if prefix_s:
         return [prefix_s] + default
     else:
-        return ["]]"] + default
+        return [";;"] + default
 
 
 class Prefix(c.Cog):
