@@ -26,9 +26,9 @@ class Account(c.Cog):
         if account:
             await ctx.message.author.send(f"TOKEN情報はここに生成されています", delete_after=30)
         else:
-            await ctx.message.author.send(f"TOKEN情報は生成されていません", delete_after=30)
+            await ctx.message.author.send(f"TOKEN情報は生成されていません\n`token make`で生成できます", delete_after=30)
 
-    @token.command(pass_context=True, description='ゲームアカウントの復元に必要なコードを作成します')
+    @token.command(pass_context=True, description='ゲームアカウントの復元に必要なコードを作成します', enabled=False)
     async def make(self, ctx):
         a = datetime.datetime.now()
         b = random.random()
