@@ -6,10 +6,7 @@ from module import db
 def table(bot, message):
     prefix_s = db.prefix(message.guild).get()
     default = [f"<@{bot.user.id}> ", f"<@!{bot.user.id}> "]
-    if prefix_s:
-        return [prefix_s] + default
-    else:
-        return [";;"] + default
+    return [prefix_s] + default
 
 
 class Prefix(c.Cog):

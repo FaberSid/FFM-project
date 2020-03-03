@@ -267,4 +267,4 @@ class prefix:
         ans = c.fetchone()
         c.close()
         conn.close()
-        return ans[0] if ans else ans
+        return ans[0] if ans else ";;"
