@@ -1,9 +1,11 @@
 import math
 import random
+
 import discord
 import requests
 from discord.ext import commands as c
-from module import battle, db
+
+from module import battle, db, monsters
 
 r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/items.json')
 items = r.json()
@@ -51,7 +53,10 @@ class Item(c.Cog):
         for in_battle in in_battles:
             full_hp = int(math.sqrt(in_battle[1])) * 5 + 50
             db.player.hp.update(full_hp, user_id)
-        return await ctx.send("<@{}>はエリクサーを使った！このチャンネルの仲間全員が全回復した！".format(user_id))
+        await ctx.send("<@{}>はエリクサーを使った！このチャンネルの仲間全員が全回復した！".format(user_id))
+        boss_lv, _, boss_id = battle.get_boss(channel_id)
+        monster = monsters.get(boss_lv, boss_id)[1]
+        await battle.Battle(self.bot).effect(ctx, monster)
 
     @item.command(aliases=['ファイアボールの書','f'])
     async def fireball(self, ctx):
@@ -65,7 +70,6 @@ class Item(c.Cog):
         boss_lv, boss_hp, boss_id = battle.get_boss(channel_id)
         player_attack = int(player_level * (1 + random.random()) / 10)
         boss_hp = boss_hp - player_attack
-        from module import monsters
         monster = monsters.get(boss_lv, boss_id)[1]
         monster_name = monster["name"]
         attack_message = "ファイアボール！<@{}>は{}に`{}`のダメージを与えた！".format(user_id, monster_name, player_attack)
@@ -76,6 +80,7 @@ class Item(c.Cog):
         else:
             db.boss_status.update(boss_hp, channel_id)
             await ctx.send("{}\n{}のHP:`{}`/{}".format(attack_message, monster_name, boss_hp, boss_lv * 10 + 50))
+            await battle.Battle(self.bot).effect(ctx, monster)
 
     @item.command(aliases=['祈りの書', 'i'])
     async def pray(self, ctx, mentions: discord.Member = None):
@@ -94,7 +99,9 @@ class Item(c.Cog):
         if not consume_an_item(user_id, 3):
             return await ctx.send("<@{}>は祈りの書を持っていない！".format(user_id))
         db.player.hp.update(1, prayed_user_id)
-        return await ctx.send("<@{0}>は祈りを捧げ、<@{1}>は復活した！\n<@{1}> 残りHP: 1".format(user_id, prayed_user_id, ))
+        await ctx.send("<@{0}>は祈りを捧げ、<@{1}>は復活した！\n<@{1}> 残りHP: 1".format(user_id, prayed_user_id, ))
+        monster = monsters.get(boss_lv, boss_id)[1]
+        await battle.Battle(self.bot).effect(ctx, monster)
 
 
 def consume_an_item(user_id, item_id):

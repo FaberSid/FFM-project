@@ -1,8 +1,11 @@
-from discord.ext import commands as c
-import discord
-from module import db, item, monsters, str_calc
-import random
 import math
+import random
+
+import discord
+from discord.ext import commands as c
+
+from module import db, item, monsters, str_calc
+
 MONSTER_NUM = 50
 
 
@@ -30,6 +33,13 @@ class Battle(c.Cog):
         elif player_hp == 0:
             error_message = "<@{}>はもうやられている！（戦いをやり直すには「{}reset」だ）".format(user_id, db.prefix(self.bot.get_channel(channel_id).guild).get())
         return player_hp, error_message
+    
+    async def effect(self, ctx, monster):
+        text = ["<@{}>は{}の毒ダメージを受けた".format(*i) for i in db.player.effect.poison.progress(ctx.channel.id)]
+        if random.random() < monster[1]["effect"].get("poison", [0])[0]:
+            if db.player.effect.poison.add(ctx.author.id, ctx.channel.id):
+                text += [f"{ctx.author.name}は毒の効果を受けてしまった！"]
+        if text:await ctx.send(embed=discord.Embed(description="\n".join(text)))
 
 
 def get_player_level(user_id, player_exp=None):
