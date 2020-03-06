@@ -88,11 +88,11 @@ class player:
                 
 
             @staticmethod
-            def add(user_id, channel_id):
+            def add(user_id, channel_id, turn=5):
                 conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
                 c = conn.cursor()
                 try:
-                    c.execute("insert into effect values(%s, %s, 'poison', %s)", (user_id,channel_id,5))
+                    c.execute("insert into effect values(%s, %s, 'poison', %s)", (user_id,channel_id,turn))
                 except UniqueViolation:
                     return False
                 conn.commit()
