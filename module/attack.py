@@ -1,10 +1,10 @@
-from discord.ext import commands as c
-from discord import Embed
-from module import db
 import random
-from module import battle
+
+from discord import Embed
+from discord.ext import commands as c
+
+from module import battle, db, monsters
 from module.str_calc import calc
-from module import monsters
 
 MONSTER_NUM = 50
 channel_in_transaction = []
@@ -33,7 +33,7 @@ class Attack(c.Cog):
     async def _attack(self, ctx, user_id, channel_id):
         player_hp, error_message = await battle.Battle(self.bot).into_battle(user_id, channel_id)
         if error_message:
-            return await ctx.send(error_message)
+            return await ctx.send(embed=Embed(description=error_message))
         player_level = battle.get_player_level(user_id)
         boss_level, boss_hp, boss_id = battle.get_boss(channel_id)
         rand = random.random()
@@ -52,6 +52,7 @@ class Attack(c.Cog):
             monster = monsters.get(boss_level, boss_id)
             monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_level))
             await ctx.send(embed=Embed(description="{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, calc(monster[1]["HP"]), boss_attack_message)))
+            await battle.Battle(self.bot).effect(ctx, monster)
 
 def setup(bot):
     bot.add_cog(Attack(bot))

@@ -1,5 +1,7 @@
 import os
+
 import psycopg2
+from psycopg2.errors import UniqueViolation
 
 CONFIG_ROOT=os.environ.get("DISCORD_BOT_CONFIG_ROOT")
 
@@ -55,6 +57,47 @@ def guild_remove(guild):
 
 
 class player:
+    class effect:
+        class poison:
+            @staticmethod
+            def get(d_id, d_type="channel"):
+                conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+                c = conn.cursor()
+                if d_type=="channel":
+                    c.execute("SELECT user_id,during FROM effect WHERE channel_id=%s and type='poison'", (d_id,))
+                    return c.fetchall()
+                elif d_type=="user":
+                    c.execute("SELECT channel_id,during FROM effect WHERE user_id=%s and type='poison'", (d_id,))
+                    return c.fetchone()
+                raise NameError("name '{}' is not defined".format(d_type))
+                
+
+            @staticmethod
+            def progress(channel_id):
+                text = ""
+                conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+                c = conn.cursor()
+                c.execute("SELECT user_id,during FROM effect WHERE channel_id=%s and type='poison'", (channel_id,))
+                for x in c.fetchall():
+                    damage=int(player.hp.get(x[0], channel_id)[0]*0.1)
+                    yield x[0],damage
+                    player.hp.update(player.hp.get(x[0], channel_id)[0]-damage, x[0])
+                c.execute("UPDATE effect SET during=during-1 WHERE channel_id=%s", (channel_id,))
+                c.execute("DELETE from effect WHERE during=0")
+                conn.commit()
+                
+
+            @staticmethod
+            def add(user_id, channel_id):
+                conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+                c = conn.cursor()
+                try:
+                    c.execute("insert into effect values(%s, %s, 'poison', %s)", (user_id,channel_id,5))
+                except UniqueViolation:
+                    return False
+                conn.commit()
+                return True
+
     class money:
         @staticmethod
         def get(user_id):

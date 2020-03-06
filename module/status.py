@@ -32,7 +32,10 @@ class Status(c.Cog):
             value = "何も持っていない"
         embed.add_field(name="item", value=">>> "+value)
         embed.add_field(name="倒した敵の数", value="追加予定")
-        embed.add_field(name="状態", value="追加予定")
+        stat = ""
+        poison = db.player.effect.poison.get(user.id, "user")
+        stat += poison and "毒状態({})".format(poison[1]) or ""
+        if stat:embed.add_field(name="状態", value=stat)
         await ctx.send(embed=embed)
 
 def setup(bot):
