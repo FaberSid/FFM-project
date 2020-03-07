@@ -12,13 +12,13 @@ def init():
                    user_id BIGINT,\
                    channel_id BIGINT,\
                    player_hp BIGINT check(player_hp >= 0),\
-                   poison BIGINT check(poison >= 0),\
                    PRIMARY KEY (user_id, channel_id)\
                )")
     c.execute("create table if not exists player(\
                     user_id BIGINT,\
                     experience BIGINT,\
                     money BIGINT check(money >= 0),\
+                    monster_count BIGINT,\
                     PRIMARY KEY (user_id)\
                 )")
     c.execute("create table if not exists channel_status(\
@@ -191,6 +191,12 @@ class player:
             c.execute("UPDATE in_battle SET player_hp=%s WHERE user_id=%s", (player_hp, user_id,))
             conn.commit()
 
+    @staticmethod
+    def monster_count(user_id):
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+        c = conn.cursor()
+        c.execute("SELECT monster_count FROM player WHERE user_id=%s", (user_id,))
+        return c.fetchone()
 
 class boss_status:
     @staticmethod
@@ -226,9 +232,11 @@ class channel:
         return c.fetchall()
 
     @staticmethod
-    def end_battle(channel_id):
+    def end_battle(channel_id, level_up=False):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
+        if level_up:
+            c.execute("UPDATE player SET monster_count=monster_count+1 WHERE EXISTS (SELECT in_battle.user_id FROM in_battle WHERE in_battle.user_id=player.user_id and channel_id=%s)", (channel_id,))
         c.execute("DELETE FROM in_battle WHERE channel_id=%s", (channel_id,))
         conn.commit()
 
@@ -259,7 +267,6 @@ class channel:
         c = conn.cursor()
         c.execute("SELECT 0 FROM in_battle WHERE channel_id=%s", (channel_id,))
         return c.fetchone()
-
 
 class shop:
     @staticmethod
