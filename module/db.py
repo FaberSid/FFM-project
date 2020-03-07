@@ -181,7 +181,7 @@ class player:
         def set(user_id, channel_id, player_hp):
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
             c = conn.cursor()
-            c.execute("INSERT INTO in_battle values(%s,%s,%s,0)", (user_id, channel_id, player_hp))
+            c.execute("INSERT INTO in_battle values(%s,%s,%s)", (user_id, channel_id, player_hp))
             conn.commit()
 
         @staticmethod
