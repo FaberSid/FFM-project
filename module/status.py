@@ -32,7 +32,7 @@ class Status(c.Cog):
             value = "何も持っていない"
         embed.add_field(name="item", value=">>> "+value)
         cnt = db.player.monster_count(user.id)
-        if cnt:embed.add_field(name="倒した敵の数", value="{}体".format(cnt))
+        if cnt and cnt[0]:embed.add_field(name="倒した敵の数", value="{}体".format(cnt[0]))
         stat = ""
         poison = db.player.effect.poison.get(user.id, "user")
         stat += poison and "毒状態({})".format(poison[1]) or ""

@@ -164,7 +164,7 @@ def experiment(user_id, exp):
 
 
 async def reset_battle(ctx, channel_id, level_up=False):
-    db.channel.end_battle(channel_id)
+    db.channel.end_battle(channel_id, level_up)
     boss_lv, boss_hp, boss_id = get_boss(channel_id)
     from module import monsters
     monster = monsters.get(boss_lv, boss_id)
