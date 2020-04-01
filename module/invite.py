@@ -5,7 +5,7 @@ from discord import Guild, NotFound, PartialInviteGuild
 from discord.ext import commands as c
 
 
-class Invite(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot=bot
 
@@ -42,4 +42,4 @@ class Invite(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Invite(bot))
+    bot.add_cog(Cog(bot))

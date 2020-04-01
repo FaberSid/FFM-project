@@ -3,7 +3,7 @@ from module import db
 from module import battle
 
 
-class Reset(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
     
@@ -17,4 +17,4 @@ class Reset(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Reset(bot))
+    bot.add_cog(Cog(bot))

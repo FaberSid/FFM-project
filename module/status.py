@@ -12,7 +12,7 @@ channel_in_transaction = []
 special_monster = {}
 
 
-class Status(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -40,4 +40,4 @@ class Status(c.Cog):
         await ctx.send(embed=embed)
 
 def setup(bot):
-    bot.add_cog(Status(bot))
+    bot.add_cog(Cog(bot))

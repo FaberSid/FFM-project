@@ -12,7 +12,7 @@ r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/training.json')
 training_set = r.json()
 
 
-class Training(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
     
@@ -68,4 +68,4 @@ def get_player_level(user_id, player_exp=None):
 
 
 def setup(bot):
-    bot.add_cog(Training(bot))
+    bot.add_cog(Cog(bot))

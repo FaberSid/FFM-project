@@ -5,7 +5,7 @@ from module import db, item
 items = item.items
 
 
-class Shop(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -108,4 +108,4 @@ def get_key_from_value(d, val):
 
 
 def setup(bot):
-    bot.add_cog(Shop(bot))
+    bot.add_cog(Cog(bot))

@@ -9,7 +9,7 @@ from asyncio import sleep
 import os
 
 
-class Account(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -53,4 +53,4 @@ class Account(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Account(bot))
+    bot.add_cog(Cog(bot))

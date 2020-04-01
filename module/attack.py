@@ -11,7 +11,7 @@ channel_in_transaction = []
 special_monster = {}
 
 
-class Attack(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -55,4 +55,4 @@ class Attack(c.Cog):
             await battle.Battle(self.bot).effect(ctx, monster)
 
 def setup(bot):
-    bot.add_cog(Attack(bot))
+    bot.add_cog(Cog(bot))

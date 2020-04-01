@@ -10,7 +10,7 @@ from discord.ext import commands as c
 from module import db, item
 
 
-class Quiz(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
     
@@ -69,4 +69,4 @@ def get_player_level(user_id, player_exp=None):
 
 
 def setup(bot):
-    bot.add_cog(Quiz(bot))
+    bot.add_cog(Cog(bot))
