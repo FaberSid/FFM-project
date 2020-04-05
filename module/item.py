@@ -20,7 +20,7 @@ channel_in_transaction = []
 special_monster = {}
 
 
-class Item(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -121,4 +121,4 @@ def obtain_an_item(user_id, item_id):
 
 
 def setup(bot):
-    bot.add_cog(Item(bot))
+    bot.add_cog(Cog(bot))

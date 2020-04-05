@@ -10,17 +10,20 @@ from discord.ext import commands as c
 from module import db, item
 
 
-class Quiz(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @c.command(pass_context=True, description='クイズに解答し、正解すると経験値がもらえるぞ。')
+    @c.command(pass_context=True, description='クイズに解答し、正解すると経験値がもらえるぞ。', enabled=False)
     async def q(self, ctx):
         """トレーニングをする"""
         user = ctx.message.author
         if user.bot:
             return
         resp = requests.get(url='http://24th.jp/test/quiz/api_quiz.php')
+        if resp.status_code == 404:
+            await ctx.send(embed=discord.Embed(title="404 Not Found",description="クイズ用のAPIが見つかりませんでした。"))
+            return
         quiz_xml = ElementTree.fromstring(resp.text.encode('utf-8'))[1]
         quiz_set = [quiz_xml[2].text, quiz_xml[3].text, quiz_xml[4].text, quiz_xml[5].text]
         random.shuffle(quiz_set)
@@ -69,4 +72,4 @@ def get_player_level(user_id, player_exp=None):
 
 
 def setup(bot):
-    bot.add_cog(Quiz(bot))
+    bot.add_cog(Cog(bot))

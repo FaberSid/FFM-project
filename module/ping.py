@@ -4,7 +4,7 @@ import time
 import psutil
 
 
-class Ping(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -22,4 +22,4 @@ class Ping(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Ping(bot))
+    bot.add_cog(Cog(bot))

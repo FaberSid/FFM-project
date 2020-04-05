@@ -9,7 +9,7 @@ def table(bot, message):
     return [prefix_s] + default
 
 
-class Prefix(c.Cog):
+class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -26,4 +26,4 @@ class Prefix(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Prefix(bot))
+    bot.add_cog(Cog(bot))
