@@ -19,7 +19,6 @@ class Cog(c.Cog):
         msg = await ctx.send(embed=Embed(description="1\u20e3 プレイヤーランキング\n"
                                                      "~~2\u20e3 チャンネルランキング~~\n"
                                                      "~~3\u20e3 倒した敵の数ランキング~~\n").set_footer(text="cmd.rank"))
-        self.bot.on_cmd -= {ctx.author.id}
         for i in range(3):
             if str(msg.embeds[0].footer.text) != "cmd.rank":
                 return
