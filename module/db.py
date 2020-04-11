@@ -121,6 +121,12 @@ class player:
             conn.commit()
 
     class experience:
+        def __len__(self):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
+            c.execute("SELECT count(*) FROM player")
+            return c.fetchone()[0]
+
         @staticmethod
         def get(user_id):
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
@@ -139,6 +145,19 @@ class player:
             c = conn.cursor()
             c.execute("UPDATE player SET experience=%s WHERE user_id=%s", (next_exp, user_id,))
             conn.commit()
+        
+        @staticmethod
+        def ranking(user_id, offset=None, limit=10):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
+            if user_id:
+                c.execute("SELECT * FROM ( SELECT ROW_NUMBER() over(ORDER BY experience DESC, user_id DESC) , rank() OVER(ORDER BY experience DESC), * FROM player ORDER BY experience DESC, user_id ASC ) AS a WHERE user_id = %s", (user_id,))
+                _offset, *rank = c.fetchone()
+            if _offset is not None and offset is None:
+                offset = _offset//10*10
+            c.execute("SELECT rank() OVER(ORDER BY experience DESC), * FROM player ORDER BY experience DESC, user_id DESC OFFSET %s LIMIT %s", (offset, limit))
+            rankinng = c.fetchall()
+            return rank, rankinng, (offset, limit)
 
     class item:
         @staticmethod
