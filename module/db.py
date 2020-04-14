@@ -79,9 +79,11 @@ class player:
                 c = conn.cursor()
                 c.execute("SELECT user_id,during FROM effect WHERE channel_id=%s and type='poison'", (channel_id,))
                 for x in c.fetchall():
-                    damage=int(player.hp.get(x[0], channel_id)[0]*0.1)
-                    yield x[0],damage
-                    player.hp.update(player.hp.get(x[0], channel_id)[0]-damage, x[0])
+                    hp=player.hp.get(x[0], channel_id)
+                    if hp:
+                        damage=int(hp[0]*0.1)
+                        yield x[0],damage
+                        player.hp.update(hp[0]-damage, x[0])
                 c.execute("UPDATE effect SET during=during-1 WHERE channel_id=%s", (channel_id,))
                 c.execute("DELETE from effect WHERE during=0")
                 conn.commit()

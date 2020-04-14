@@ -35,7 +35,7 @@ class Battle(c.Cog):
         return player_hp, error_message
     
     async def effect(self, ctx, monster):
-        text = ["<@{}>は{}の毒ダメージを受けた".format(*i) for i in db.player.effect.poison.progress(ctx.channel.id)]
+        text = ["<@{}>は{}の毒ダメージを受けた".format(*i) for i in db.player.effect.poison.progress(ctx.channel.id) if i]
         if random.random() < monster[1]["effect"].get("poison", [0])[0]:
             if db.player.effect.poison.add(ctx.author.id, ctx.channel.id, monster[1]["effect"].get("poison", [5]*3)[2]):
                 text += [f"{ctx.author.name}は毒の効果を受けてしまった！"]
