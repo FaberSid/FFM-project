@@ -29,7 +29,7 @@ class Battle(c.Cog):
             return player_hp, error_message
         player_hp = in_battle[1]
         if in_battle_channel_id != channel_id:
-            error_message = f"<@{user_id}>は'{battle_channel.guild.name}の#{battle_channel.name}'で既に戦闘中だ。"
+            error_message = f"<@{user_id}>は'{battle_channel.guild.name}の{battle_channel.mention}'で既に戦闘中だ。"
         elif player_hp == 0:
             error_message = "<@{}>はもうやられている！（戦いをやり直すには「{}reset」だ）".format(user_id, db.prefix(self.bot.get_channel(channel_id).guild).get())
         return player_hp, error_message
