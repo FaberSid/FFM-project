@@ -1,4 +1,4 @@
-import requests
+import json
 import random
 from module import db
 import copy

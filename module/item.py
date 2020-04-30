@@ -2,7 +2,7 @@ import math
 import random
 
 import discord
-import requests
+import json
 from discord.ext import commands as c
 
 from module import battle, db, monsters

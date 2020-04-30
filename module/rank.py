@@ -2,7 +2,6 @@ import os
 import random
 
 import psycopg2
-import requests
 from discord import Embed
 from discord.ext import commands as c
 
