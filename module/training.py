@@ -8,8 +8,8 @@ from discord.ext import commands as c
 
 from module import db, item
 
-r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/training.json')
-training_set = r.json()
+with open('../assets/training.json', encoding='utf-8') as f:
+    training_set = json.load(f)
 
 
 class Cog(c.Cog):

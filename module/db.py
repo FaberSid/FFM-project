@@ -212,6 +212,27 @@ class player:
             c.execute("UPDATE in_battle SET player_hp=%s WHERE user_id=%s", (player_hp, user_id,))
             conn.commit()
 
+    class login:
+        @staticmethod
+        def get(user_id):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
+            c.execute("SELECT login_count,last_login FROM player WHERE user_id=%s", (user_id,))
+            login_data = c.fetchone()
+            if not login_data:
+                c.execute("INSERT INTO player values( %s, %s, 0)", (user_id, 1))
+                conn.commit()
+                login_data = [0, 0]
+            return login_data
+        
+        @staticmethod
+        def do(user_id, timestamp):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
+            c.execute("UPDATE player set login_count=login_count+1, last_login=%s WHERE user_id=%s", (timestamp, user_id,))
+            conn.commit()
+            return
+
     @staticmethod
     def monster_count(user_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))

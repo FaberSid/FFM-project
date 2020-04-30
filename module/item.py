@@ -7,9 +7,9 @@ from discord.ext import commands as c
 
 from module import battle, db, monsters
 
-r = requests.get(f'{db.CONFIG_ROOT}Discord/FFM/assets/items.json')
-items = r.json()
 
+with open('../assets/items.json', encoding='utf-8') as f:
+    items = json.load(f)
 item_description = """アイテムの説明
 エリクサー:チャンネルの全員を全回復させる。
 ファイアボールの書:遠隔攻撃する。
