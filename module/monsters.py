@@ -3,8 +3,8 @@ import random
 from module import db
 import copy
 
-r = requests.get(f'{db.CONFIG_ROOT}/Discord/FFM/assets/monsters.json')
-monsters = r.json()
+with open('../assets/monsters.json', encoding='utf-8') as f:
+    monsters = json.load(f)
 
 
 def init():
