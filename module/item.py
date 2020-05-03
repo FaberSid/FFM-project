@@ -7,9 +7,9 @@ from discord.ext import commands as c
 
 from module import battle, db, monsters
 
-
 with open('../assets/items.json', encoding='utf-8') as f:
     items = json.load(f)
+
 item_description = """アイテムの説明
 エリクサー:チャンネルの全員を全回復させる。
 ファイアボールの書:遠隔攻撃する。
@@ -104,19 +104,19 @@ class Cog(c.Cog):
         await battle.Battle(self.bot).effect(ctx, monster)
 
 
-def consume_an_item(user_id, item_id):
+def consume_an_item(user_id, item_id, cnt=1):
     current_count = db.player.item.get_cnt(user_id, item_id)
     if not current_count:
         return False
-    db.player.item.update_cnt(user_id, item_id, current_count-1)
+    db.player.item.update_cnt(user_id, item_id, current_count-cnt)
     return True
 
 
-def obtain_an_item(user_id, item_id):
+def obtain_an_item(user_id, item_id, cnt=1):
     current_count = db.player.item.get_cnt(user_id, item_id)
     if not current_count:
         current_count = 0
-    db.player.item.update_cnt(user_id, item_id, current_count+1)
+    db.player.item.update_cnt(user_id, item_id, current_count+cnt)
     return True
 
 
