@@ -49,9 +49,9 @@ class Cog(c.Cog):
         else:
             db.boss_status.update(boss_hp, channel_id)
             boss_attack_message = battle.boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id)
-            monster = monsters.get(boss_level, boss_id)
-            monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_level))
-            await ctx.send(embed=Embed(description="{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, calc(monster[1]["HP"]), boss_attack_message)))
+            monster = monsters.get(boss_level, boss_id)[1]
+            monster["HP"] = monster["HP"].replace("boss_level", str(boss_level))
+            await ctx.send(embed=Embed(description="{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, calc(monster["HP"]), boss_attack_message)))
             await battle.Battle(self.bot).effect(ctx, monster)
 
 def setup(bot):
