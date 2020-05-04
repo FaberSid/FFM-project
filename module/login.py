@@ -76,7 +76,7 @@ class Cog(c.Cog):
                         image = overlay(image, cv_overlay_image, (188+254*x, 240+255*y))
                     img_pil = Image.fromarray(image)
                     draw = ImageDraw.Draw(img_pil)
-                    draw.text((350+255*x, 400+255*y), str(df[x+5*y]["reward"]), font=ImageFont.truetype('../asset/HGRPP1.TTC', 64), fill = (256-150*(count>x+5*y),)*3+(0,))
+                    draw.text((350+255*x, 400+255*y), str(df[x+5*y]["reward"]), font=ImageFont.truetype('../assets/HGRPP1.TTC', 64), fill = (256-150*(count>x+5*y),)*3+(0,))
                     image = np.array(img_pil)
             _,img=cv2.imencode(".jpg",image,[int(cv2.IMWRITE_JPEG_QUALITY), 100])
             db.player.login.do(ctx.author.id, now.timestamp())
