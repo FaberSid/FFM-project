@@ -1,9 +1,11 @@
-from discord.ext import commands as c
-from discord import Embed
-from module import db
-import random
 import json
-from module import battle
+import math
+import random
+
+from discord import Embed
+from discord.ext import commands as c
+
+from module import battle, db
 
 with open('../assets/items.json', encoding='utf-8') as f:
     items = json.load(f)
@@ -21,9 +23,11 @@ class Cog(c.Cog):
     async def status(self, ctx):
         channel_id = ctx.channel.id
         user = ctx.author
+        exp = battle.get_player_exp(user.id)
         embed = Embed().set_author(name=f"{user.name} のステータス", icon_url=user.avatar_url)
-        embed.add_field(name="Lv", value=battle.get_player_level(user.id))
-        embed.add_field(name="exp", value=battle.get_player_exp(user.id))
+        embed.add_field(name="Lv", value=battle.get_player_level(user.id, exp))
+        embed.add_field(name="exp", value=exp)
+        embed.add_field(name="レベルアップまで", value=math.ceil(exp**0.5)**2-exp)
         embed.add_field(name="FG", value=db.player.money.get(user.id))
         my_items = db.player.item.get_list(user.id)
         if my_items:
