@@ -310,17 +310,22 @@ class channel:
         c.execute("SELECT 0 FROM in_battle WHERE channel_id=%s", (channel_id,))
         return c.fetchone()
 
-class shop:
     @staticmethod
-    def sell(user_id, s_id, s_cnt, money):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
-        c.execute("UPDATE item SET count=count-%s WHERE user_id=%s and item_id=%s", (s_cnt, user_id, s_id))
-        c.execute("UPDATE player SET money=%s WHERE user_id=%s", (money, user_id))
 
-    @staticmethod
-    def buy(user_id, s_id, s_cnt):
-        pass
+#使われていないのでコメントアウト
+#class shop:
+#    @staticmethod
+#    def sell(user_id, s_id, s_cnt, money):
+#        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+#        c = conn.cursor()
+#        c.execute("UPDATE item SET count=count-%s WHERE user_id=%s and item_id=%s", (s_cnt, user_id, s_id))
+#        c.execute("UPDATE player SET money=%s WHERE user_id=%s", (money, user_id))
+#
+#    @staticmethod
+#    def buy(user_id, s_id, s_cnt):
+#        pass
 
 
 class account:
