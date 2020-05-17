@@ -242,14 +242,14 @@ class player:
 
 class boss_status:
     @staticmethod
-    def get(channel_id):
+    def get_st(channel_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("SELECT boss_level, boss_hp, boss_id FROM channel_status WHERE channel_id=%s", (channel_id,))
         return c.fetchone()
 
     @staticmethod
-    def set(channel_id, boss_id, boss_level, boss_hp):
+    def set_st(channel_id, boss_id, boss_level, boss_hp):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("INSERT INTO channel_status values( %s, %s, %s, %s) "
@@ -264,6 +264,13 @@ class boss_status:
         c.execute("UPDATE channel_status SET boss_hp=%s WHERE channel_id=%s", (boss_hp, channel_id,))
         conn.commit()
 
+    @staticmethod
+    def get_list(channels: tuple):
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+        c = conn.cursor()
+        c.execute("SELECT channel_id, boss_level, boss_hp FROM channel_status WHERE channel_id in %s", (channels,))
+        return c.fetchall()
+        
 
 class channel:
     @staticmethod
@@ -287,6 +294,7 @@ class channel:
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("UPDATE channel_status SET boss_id=%s WHERE channel_id=%s", (boss_id, channel_id))
+        conn.commit()
 
     @staticmethod
     def all_battle_player(channel_id):
@@ -310,17 +318,27 @@ class channel:
         c.execute("SELECT 0 FROM in_battle WHERE channel_id=%s", (channel_id,))
         return c.fetchone()
 
-class shop:
     @staticmethod
-    def sell(user_id, s_id, s_cnt, money):
+    def restore(old_ch_id,new_ch_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
-        c.execute("UPDATE item SET count=count-%s WHERE user_id=%s and item_id=%s", (s_cnt, user_id, s_id))
-        c.execute("UPDATE player SET money=%s WHERE user_id=%s", (money, user_id))
+        c.execute("UPDATE channel_status SET channel_id=%s WHERE channel_id=%s", (new_ch_id,old_ch_id))
+        c.execute("UPDATE in_battle SET channel_id=%s WHERE channel_id=%s", (new_ch_id,old_ch_id))
+        c.execute("UPDATE effect SET channel_id=%s WHERE channel_id=%s", (new_ch_id,old_ch_id))
+        conn.commit()
 
-    @staticmethod
-    def buy(user_id, s_id, s_cnt):
-        pass
+#使われていないのでコメントアウト
+#class shop:
+#    @staticmethod
+#    def sell(user_id, s_id, s_cnt, money):
+#        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+#        c = conn.cursor()
+#        c.execute("UPDATE item SET count=count-%s WHERE user_id=%s and item_id=%s", (s_cnt, user_id, s_id))
+#        c.execute("UPDATE player SET money=%s WHERE user_id=%s", (money, user_id))
+#
+#    @staticmethod
+#    def buy(user_id, s_id, s_cnt):
+#        pass
 
 
 class account:
