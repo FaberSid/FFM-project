@@ -49,14 +49,14 @@ def get_player_level(user_id, player_exp=None):
 
 
 def get_boss(channel_id):
-    channel_status = db.boss_status.get(channel_id)
+    channel_status = db.boss_status.get_st(channel_id)
     if not channel_status:
         from module import str_calc
         boss_lv = 1
         from module import monsters
         monster = monsters.get(boss_lv)
         monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_lv))
-        db.boss_status.set(channel_id, monster[0], boss_lv, str_calc.calc(monster[1]["HP"]))
+        db.boss_status.set_st(channel_id, monster[0], boss_lv, str_calc.calc(monster[1]["HP"]))
         channel_status = [boss_lv, str_calc.calc(monster[1]["HP"]), monster[0]]
     return channel_status
 
@@ -89,7 +89,7 @@ def get_attack_message(user_id, player_attack, monster_name, rand):
 
 def get_boss_attack(channel_id):
     from module import str_calc
-    boss_lv, _, boss_id = db.boss_status.get(channel_id)
+    boss_lv, _, boss_id = db.boss_status.get_st(channel_id)
     from module import monsters
     monster = monsters.get(boss_lv, boss_id)[1]
     monster["ATK"] = monster["ATK"].replace("boss_level", str(boss_lv))
@@ -172,7 +172,7 @@ async def reset_battle(ctx, channel_id, level_up=False):
     monster = monsters.get(boss_lv, None if (monster[1].get("canReset") == "True" or level_up) else boss_id)
     from module.str_calc import calc
     monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_lv))
-    db.boss_status.set(channel_id, monster[0], boss_lv,  calc(monster[1]["HP"]))
+    db.boss_status.set_st(channel_id, monster[0], boss_lv,  calc(monster[1]["HP"]))
     em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".
                        format(monster[1]["name"], boss_lv, calc(monster[1]["HP"])))
     em.set_image(url=f"{db.CONFIG_ROOT}Discord/FFM/img/{monster[1].get('img','404.png')}")

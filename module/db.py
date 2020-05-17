@@ -242,14 +242,14 @@ class player:
 
 class boss_status:
     @staticmethod
-    def get(channel_id):
+    def get_st(channel_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("SELECT boss_level, boss_hp, boss_id FROM channel_status WHERE channel_id=%s", (channel_id,))
         return c.fetchone()
 
     @staticmethod
-    def set(channel_id, boss_id, boss_level, boss_hp):
+    def set_st(channel_id, boss_id, boss_level, boss_hp):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("INSERT INTO channel_status values( %s, %s, %s, %s) "
