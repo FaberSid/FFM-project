@@ -264,6 +264,13 @@ class boss_status:
         c.execute("UPDATE channel_status SET boss_hp=%s WHERE channel_id=%s", (boss_hp, channel_id,))
         conn.commit()
 
+    @staticmethod
+    def get_list(channels: tuple):
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+        c = conn.cursor()
+        c.execute("SELECT channel_id, boss_level, boss_hp FROM channel_status WHERE channel_id in %s", (channels,))
+        return c.fetchall()
+        
 
 class channel:
     @staticmethod
@@ -287,6 +294,7 @@ class channel:
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute("UPDATE channel_status SET boss_id=%s WHERE channel_id=%s", (boss_id, channel_id))
+        conn.commit()
 
     @staticmethod
     def all_battle_player(channel_id):
@@ -311,8 +319,13 @@ class channel:
         return c.fetchone()
 
     @staticmethod
+    def restore(old_ch_id,new_ch_id):
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
+        c.execute("UPDATE channel_status SET channel_id=%s WHERE channel_id=%s", (new_ch_id,old_ch_id))
+        c.execute("UPDATE in_battle SET channel_id=%s WHERE channel_id=%s", (new_ch_id,old_ch_id))
+        c.execute("UPDATE effect SET channel_id=%s WHERE channel_id=%s", (new_ch_id,old_ch_id))
+        conn.commit()
 
 #使われていないのでコメントアウト
 #class shop:
