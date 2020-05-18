@@ -100,7 +100,7 @@ class Cog(c.Cog):
             return await ctx.send("<@{}>は祈りの書を持っていない！".format(user_id))
         db.player.hp.update(1, prayed_user_id)
         await ctx.send("<@{0}>は祈りを捧げ、<@{1}>は復活した！\n<@{1}> 残りHP: 1".format(user_id, prayed_user_id, ))
-        boss_lv, *_ = battle.get_boss(channel_id)
+        boss_lv, _, boss_id = battle.get_boss(channel_id)
         monster = monsters.get(boss_lv, boss_id)[1]
         await battle.Battle(self.bot).effect(ctx, monster)
 
