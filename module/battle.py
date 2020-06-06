@@ -4,7 +4,7 @@ import random
 import discord
 from discord.ext import commands as c
 
-from module import db, item, monsters, str_calc
+from module import db, item, monsters, str_calc, status
 
 MONSTER_NUM = 50
 
@@ -15,7 +15,7 @@ class Battle(c.Cog):
 
     async def into_battle(self, user_id, channel_id):
         error_message = ""
-        player_level = get_player_level(user_id)
+        player_level = status.get_player_level(user_id)
         in_battle = db.player.hp.get(user_id)
         if not in_battle:
             player_hp = player_level * 5 + 50  # player_max_hp
@@ -40,12 +40,6 @@ class Battle(c.Cog):
             if db.player.effect.poison.add(ctx.author.id, ctx.channel.id, monster["effect"].get("poison", [5]*3)[2]):
                 text += [f"{ctx.author.name}は毒の効果を受けてしまった！"]
         if text:await ctx.send(embed=discord.Embed(description="\n".join(text)))
-
-
-def get_player_level(user_id, player_exp=None):
-    if player_exp:
-        return int(math.sqrt(player_exp))
-    return int(math.sqrt(db.player.experience.get(user_id)))
 
 
 def get_boss(channel_id):
@@ -112,11 +106,6 @@ def boss_attack_process(user_id, player_hp, player_level, monster_name, channel_
             monster_name, user_id, boss_attack, player_hp, player_level * 5 + 50)
 
 
-def get_player_exp(user_id):
-    player = db.player.experience.get(user_id)
-    return player
-
-
 def win_process(channel_id, boss_level, monster_name):
     battle_members = [m for m in
                       db.channel.all_player(channel_id)]
@@ -128,9 +117,9 @@ def win_process(channel_id, boss_level, monster_name):
     exp = boss_level
     for battle_member in battle_members:
         member_id = battle_member[0]
-        level_up_comments.append(experiment(member_id, exp))
+        level_up_comments.append(status.experiment(member_id, exp))
         members += "<@{}> ".format(member_id)
-        p = min(0.02 * boss_level * boss_level / get_player_exp(member_id), 0.1)
+        p = min(0.02 * boss_level * boss_level / db.player.experience.get(member_id), 0.1)
         if boss_level % 50 == 0 and random.random() < p:
             elixir_members += "<@{}> ".format(member_id)
             item.obtain_an_item(member_id, 1)
@@ -150,17 +139,6 @@ def win_process(channel_id, boss_level, monster_name):
     item_get = "\n".join(c for c in [elixir_members, fire_members, pray_members] if c)
     msg="{0}を倒した！\n\n{1}は`{2}`の経験値を得た。\n{3}\n{4}".format(monster_name, members, exp, level_up_comment, item_get)
     return ("勝利メッセージが2000文字を超えたので表示できません" if len(msg)>2000 else msg)
-
-
-def experiment(user_id, exp):
-    player_exp = db.player.experience.get(user_id)
-    next_exp = player_exp + exp
-    current_level = int(math.sqrt(player_exp))
-    db.player.experience.update(user_id, next_exp)
-    if next_exp > (current_level + 1) ** 2:
-        next_level = int(math.sqrt(next_exp))
-        return "<@{}>はレベルアップした！`Lv.{} -> Lv.{}`".format(user_id, current_level, next_level)
-    return ""
 
 
 async def reset_battle(ctx, channel_id, level_up=False):

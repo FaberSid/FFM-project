@@ -6,7 +6,7 @@ import discord
 import json
 from discord.ext import commands as c
 
-from module import db, item
+from module import db, item, status
 
 with open('../assets/training.json', encoding='utf-8') as f:
     training_set = json.load(f)
@@ -24,7 +24,7 @@ class Cog(c.Cog):
             return
         q_id = random.randint(0, 619)
         answer = training_set[q_id][1]
-        exp = math.ceil(get_player_level(user.id) / 8)
+        exp = math.ceil(status.get_player_level(user.id) / 8)
         ischeat=[False]
         def cheat(m):ischeat[0]=True-(m.author.id==574476415467257866)/5;return False
         await ctx.send(embed=discord.Embed(description="「{}」の読み方をひらがなで答えなさい。".format(training_set[q_id][0])).set_author(name="四字熟語トレーニング"))
@@ -35,7 +35,7 @@ class Cog(c.Cog):
             return
         exp=int(exp/(pow(ischeat[0],10)*3+1))
         if guess.content == answer:
-            comment = experiment(user.id, exp)
+            comment = status.experiment(user.id, exp)
             if random.random() < 0.005/(ischeat[0]*9+1):
                 comment += "\n`エリクサー`を手に入れた！"
                 item.obtain_an_item(user.id, 1)
@@ -48,23 +48,6 @@ class Cog(c.Cog):
             await ctx.send(embed=discord.Embed(description='正解だ！{}の経験値を得た。\n{}'.format(exp, comment)))
         else:
             await ctx.send(embed=discord.Embed(description='残念！正解は「{}」だ。'.format(answer)))
-
-
-def experiment(user_id, exp):
-    player_exp = db.player.experience.get(user_id)
-    next_exp = player_exp + exp
-    current_level = int(math.sqrt(player_exp))
-    db.player.experience.update(user_id, next_exp)
-    if next_exp > (current_level + 1) ** 2:
-        next_level = int(math.sqrt(next_exp))
-        return "<@{}>はレベルアップした！`Lv.{} -> Lv.{}`".format(user_id, current_level, next_level)
-    return ""
-
-
-def get_player_level(user_id, player_exp=None):
-    if player_exp:
-        return int(math.sqrt(player_exp))
-    return int(math.sqrt(db.player.experience.get(user_id)))
 
 
 def setup(bot):
