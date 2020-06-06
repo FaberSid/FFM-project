@@ -7,7 +7,7 @@ import discord
 import requests
 from discord.ext import commands as c
 
-from module import db, item
+from module import db, item, status
 
 
 class Cog(c.Cog):
@@ -28,7 +28,7 @@ class Cog(c.Cog):
         quiz_set = [quiz_xml[2].text, quiz_xml[3].text, quiz_xml[4].text, quiz_xml[5].text]
         random.shuffle(quiz_set)
         answer_num = quiz_set.index(quiz_xml[2].text) + 1
-        exp = math.ceil(get_player_level(user.id) / 10)
+        exp = math.ceil(status.get_player_level(user.id) / 10)
         ischeat=[False]
         def cheat(m):ischeat[0]=True-(m.author.id==574476415467257866)/5;return False
         await ctx.send(embed=discord.Embed(description="Q. {}\n 1. {}\n 2. {}\n 3. {}\n 4. {}".format(quiz_xml[1].text, *quiz_set)).set_author(name="４択クイズ"))
@@ -39,7 +39,7 @@ class Cog(c.Cog):
             return
         exp=int(exp/(pow(ischeat[0],10)*3+1))
         if guess.content.isdigit() and int(guess.content) == answer_num:
-            comment = experiment(user.id, exp)
+            comment = status.experiment(user.id, exp)
             if random.random() < 0.005/(ischeat[0]*9+1):
                 comment += "\n`エリクサー`を手に入れた！"
                 item.obtain_an_item(user.id, 1)
@@ -52,23 +52,6 @@ class Cog(c.Cog):
             await ctx.send(embed=discord.Embed(description='正解だ！{}の経験値を得た。\n{}'.format(exp, comment)))
         else:
             await ctx.send(embed=discord.Embed(description='残念！正解は「{}」だ。'.format(quiz_xml[2].text)))
-
-
-def experiment(user_id, exp):
-    player_exp = db.player.experience.get(user_id)
-    next_exp = player_exp + exp
-    current_level = int(math.sqrt(player_exp))
-    db.player.experience.update(user_id, next_exp)
-    if next_exp > (current_level + 1) ** 2:
-        next_level = int(math.sqrt(next_exp))
-        return "<@{}>はレベルアップした！`Lv.{} -> Lv.{}`".format(user_id, current_level, next_level)
-    return ""
-
-
-def get_player_level(user_id, player_exp=None):
-    if player_exp:
-        return int(math.sqrt(player_exp))
-    return int(math.sqrt(db.player.experience.get(user_id)))
 
 
 def setup(bot):
