@@ -77,8 +77,8 @@ class Cog(c.Cog):
             name=f"{cnt}回目のエラーです").set_footer(text=hash_error)
         l_embeds = [[top.copy()]]
         description = ""
-        l_error += ["\n#END Traceback```\n**発生場所**\n{}(ID:{})\n{}(ID:{})\nLink:[ここ]({})\n```escape".format(
-            ctx.guild.name, ctx.guild.id, ctx.channel.name, ctx.channel.id, ctx.message.jump_url)]
+        l_error += ["\n#END Traceback```\n**発生場所**\nGuild:{}(ID:{})\nchannel:{}(ID:{})\nuser:{}(ID:{})\nLink:[ここ]({})\n```escape".format(
+            ctx.guild.name, ctx.guild.id, ctx.channel.name, ctx.channel.id, ctx.author.name, ctx.author.id, ctx.message.jump_url)]
         while l_error:
             if not description:
                 description = l_error.pop(0)
