@@ -23,7 +23,7 @@ class Cog(c.Cog):
     async def status(self, ctx):
         channel_id = ctx.channel.id
         user = ctx.author
-        exp = get_player_exp(user.id)
+        exp = db.player.experience.get(user.id)
         embed = Embed().set_author(
             name=f"{user.name} のステータス", icon_url=user.avatar_url)
         embed.add_field(name="Lv", value=get_player_level(user.id, exp))
