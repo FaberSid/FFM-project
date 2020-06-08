@@ -18,8 +18,8 @@ class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.is_owner()
-    @commands.command(name='eval', hidden=True)
+    @c.is_owner()
+    @c.command(name='eval', hidden=True)
     async def evals(self, ctx):
         """Evaluates a code"""
 
