@@ -1,5 +1,5 @@
 from discord.ext import commands as c
-from discord import Forbidden
+from discord import Forbidden, HTTPException
 from module import db
 
 
@@ -18,10 +18,10 @@ class Cog(c.Cog):
         if prefix_str is None:
             await ctx.send("プレフィックスが指定されていません")
         else:
+            db.prefix(ctx.guild).register(prefix_str)
             try:
                 await ctx.guild.get_member(self.bot.user.id).edit(nick=f"[{prefix_str}]{self.bot.user.name}")
-                db.prefix(ctx.guild).register(prefix_str)
-            except Forbidden:
+            except (Forbidden, HTTPException):
                 pass
 
 
