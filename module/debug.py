@@ -17,6 +17,7 @@ def cleanup_code(content):
 class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self._last_result = None
 
     @c.is_owner()
     @c.command(name='eval', hidden=True)
