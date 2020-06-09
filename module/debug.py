@@ -6,7 +6,7 @@ import textwrap
 import traceback
 from contextlib import redirect_stdout
 
-with open('../assets/items.json', encoding='utf-8') as f:
+with open('../assets/USERs.json', encoding='utf-8') as f:
     USERs = json.load(f)
 
 def cleanup_code(content):
@@ -23,7 +23,7 @@ class Cog(c.Cog):
     async def evals(self, ctx):
         """Evaluates a code"""
 
-        if all((x in USERs.get(str(ctx.author.id), [])) for x in ["Cheater", "Debugger"]):
+        if not all((x in USERs.get(str(ctx.author.id), [])) for x in ["Cheater", "Debugger"]):
             return
         env = {
             'bot': self.bot,
