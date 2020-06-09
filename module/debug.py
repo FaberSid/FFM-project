@@ -73,4 +73,4 @@ class Cog(c.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Cheat(bot))
+    bot.add_cog(Cog(bot))
