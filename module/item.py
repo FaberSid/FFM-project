@@ -1,11 +1,11 @@
+import json
 import math
 import random
 
 import discord
-import json
 from discord.ext import commands as c
 
-from module import battle, db, monsters
+from module import battle, db, monsters, status
 
 with open('../assets/items.json', encoding='utf-8') as f:
     items = json.load(f)
@@ -34,11 +34,14 @@ class Cog(c.Cog):
             user = ctx.message.author
             if ctx.invoked_subcommand is None:
                 my_items = db.player.item.get_list(user.id)
-                item_list = "\n".join("{} : {}個".format(items.get(str(i[0]),{"name": "unknown"})["name"], i[1]) for i in my_items)
+                item_list = "\n".join("{} : {}個".format(
+                    items.get(str(i[0]), {"name": "unknown"})["name"], i[1]) for i in my_items)
                 if my_items:
-                    embed = discord.Embed(title=f"{user.display_name}が所有するアイテム",description=item_list)
+                    embed = discord.Embed(
+                        title=f"{user.display_name}が所有するアイテム", description=item_list)
                 else:
-                    embed = discord.Embed(description=f"{user.display_name}はアイテムを何も持っていない")
+                    embed = discord.Embed(
+                        description=f"{user.display_name}はアイテムを何も持っていない")
                 return await ctx.send(embed=embed)
         finally:
             channel_in_transaction.remove(channel_id)
@@ -58,7 +61,7 @@ class Cog(c.Cog):
         monster = monsters.get(boss_lv, boss_id)[1]
         await battle.Battle(self.bot).effect(ctx, monster)
 
-    @item.command(aliases=['ファイアボールの書','f'])
+    @item.command(aliases=['ファイアボールの書', 'f'])
     async def fireball(self, ctx):
         user_id, channel_id = ctx.message.author.id, ctx.message.channel.id
         player_hp, error_message = await battle.Battle(self.bot).into_battle(user_id, channel_id)
@@ -66,13 +69,14 @@ class Cog(c.Cog):
             return await ctx.send(error_message)
         if not consume_an_item(user_id, 2):
             return await ctx.send(f"<@{user_id}>はファイアボールの書を持っていない！")
-        player_level = battle.get_player_level(user_id)
+        player_level = status.get_player_level(user_id)
         boss_lv, boss_hp, boss_id = battle.get_boss(channel_id)
         player_attack = int(player_level * (1 + random.random()) / 10)
         boss_hp = boss_hp - player_attack
         monster = monsters.get(boss_lv, boss_id)[1]
         monster_name = monster["name"]
-        attack_message = "ファイアボール！<@{}>は{}に`{}`のダメージを与えた！".format(user_id, monster_name, player_attack)
+        attack_message = "ファイアボール！<@{}>は{}に`{}`のダメージを与えた！".format(
+            user_id, monster_name, player_attack)
         if boss_hp <= 0:
             win_message = battle.win_process(channel_id, boss_lv, monster_name)
             await ctx.send("{}\n{}".format(attack_message, win_message))
