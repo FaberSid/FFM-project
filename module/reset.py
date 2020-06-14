@@ -11,7 +11,7 @@ class Cog(c.Cog):
     async def reset(self, ctx):
         """戦いをやり直す"""
         if db.channel.is_battle(ctx.message.channel.id):
-            await battle.reset_battle(ctx, ctx.message.channel.id, False)
+            await battle.reset_battle(ctx, False)
         else:
             await ctx.send("このチャンネルでは戦いは行われていないようだ。")
 

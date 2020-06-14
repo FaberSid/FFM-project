@@ -42,7 +42,7 @@ class Battle(c.Cog):
         if text:await ctx.send(embed=discord.Embed(description="\n".join(text)))
 
 
-def get_boss(channel_id):
+def get_boss(ctx):
     channel_status = db.boss_status.get_st(channel_id)
     if not channel_status:
         from module import str_calc
@@ -50,7 +50,7 @@ def get_boss(channel_id):
         from module import monsters
         monster = monsters.get(boss_lv)
         monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_lv))
-        db.boss_status.set_st(channel_id, monster[0], boss_lv, str_calc.calc(monster[1]["HP"]))
+        db.boss_status.set_st(ctx, monster[0], boss_lv, str_calc.calc(monster[1]["HP"]))
         channel_status = [boss_lv, str_calc.calc(monster[1]["HP"]), monster[0]]
     return channel_status
 
@@ -141,16 +141,16 @@ def win_process(channel_id, boss_level, monster_name):
     return ("勝利メッセージが2000文字を超えたので表示できません" if len(msg)>2000 else msg)
 
 
-async def reset_battle(ctx, channel_id, level_up=False):
-    db.channel.end_battle(channel_id, level_up)
-    boss_lv, boss_hp, boss_id = get_boss(channel_id)
+async def reset_battle(ctx, level_up=False):
+    db.channel.end_battle(ctx.channel.id, level_up)
+    boss_lv, boss_hp, boss_id = get_boss(ctx)
     from module import monsters
     monster = monsters.get(boss_lv, boss_id)
     boss_lv += level_up
     monster = monsters.get(boss_lv, None if (monster[1].get("canReset") == "True" or level_up) else boss_id)
     from module.str_calc import calc
     monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_lv))
-    db.boss_status.set_st(channel_id, monster[0], boss_lv,  calc(monster[1]["HP"]))
+    db.boss_status.set_st(ctx, monster[0], boss_lv,  calc(monster[1]["HP"]))
     em = discord.Embed(title="{}が待ち構えている...！\nLv.{}  HP:{}".
                        format(monster[1]["name"], boss_lv, calc(monster[1]["HP"])))
     em.set_image(url=f"{db.CONFIG_ROOT}Discord/FFM/img/{monster[1].get('img','404.png')}")
