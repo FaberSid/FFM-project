@@ -30,7 +30,7 @@ class Cog(c.Cog):
         finally:
             channel_in_transaction.remove(channel_id)
 
-    async def _attack(self, ctx, user_id, channel_id):
+    async def _attack(self, ctx):
         user_id = ctx.author.id
         channel_id = ctx.channel.id
         player_hp, error_message = await battle.Battle(self.bot).into_battle(user_id, channel_id)
