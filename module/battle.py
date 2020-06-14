@@ -43,7 +43,7 @@ class Battle(c.Cog):
 
 
 def get_boss(ctx):
-    channel_status = db.boss_status.get_st(channel_id)
+    channel_status = db.boss_status.get_st(ctx.channel.id)
     if not channel_status:
         from module import str_calc
         boss_lv = 1

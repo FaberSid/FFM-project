@@ -26,11 +26,13 @@ class Cog(c.Cog):
             return await ctx.send("`攻撃失敗。ゆっくりコマンドを打ってね。`")
         try:
             channel_in_transaction.append(channel_id)
-            await self._attack(ctx, ctx.message.author.id, channel_id)
+            await self._attack(ctx)
         finally:
             channel_in_transaction.remove(channel_id)
 
     async def _attack(self, ctx, user_id, channel_id):
+        user_id = ctx.author.id
+        channel_id = ctx.channel.id
         player_hp, error_message = await battle.Battle(self.bot).into_battle(user_id, channel_id)
         if error_message:
             return await ctx.send(embed=Embed(description=error_message))
