@@ -35,7 +35,7 @@ class Cog(c.Cog):
         if error_message:
             return await ctx.send(embed=Embed(description=error_message))
         player_level = status.get_player_level(user_id)
-        boss_level, boss_hp, boss_id = battle.get_boss(channel_id)
+        boss_level, boss_hp, boss_id = battle.get_boss(ctx)
         rand = random.random()
         player_attack = battle.get_player_attack(player_level, boss_level, boss_id, rand)
         boss_hp = boss_hp - player_attack
@@ -45,7 +45,7 @@ class Cog(c.Cog):
         if boss_hp <= 0:
             win_message = battle.win_process(channel_id, boss_level, monster_name)
             await ctx.send(embed=Embed(description="{}\n{}".format(attack_message, win_message)))
-            await battle.reset_battle(ctx, channel_id, level_up=True)
+            await battle.reset_battle(ctx, level_up=True)
         else:
             db.boss_status.update(boss_hp, channel_id)
             boss_attack_message = battle.boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id)

@@ -80,7 +80,7 @@ class Cog(c.Cog):
         if boss_hp <= 0:
             win_message = battle.win_process(channel_id, boss_lv, monster_name)
             await ctx.send("{}\n{}".format(attack_message, win_message))
-            await battle.reset_battle(ctx, channel_id, level_up=True)
+            await battle.reset_battle(ctx, level_up=True)
         else:
             db.boss_status.update(boss_hp, channel_id)
             await ctx.send("{}\n{}のHP:`{}`/{}".format(attack_message, monster_name, boss_hp, boss_lv * 10 + 50))

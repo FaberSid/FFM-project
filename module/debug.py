@@ -1,5 +1,4 @@
 from discord.ext import commands as c
-import contextlib
 import io
 import json
 import textwrap
