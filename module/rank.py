@@ -19,7 +19,7 @@ class Cog(c.Cog):
                                                      "2\u20e3 チャンネルランキング(global)\n"
                                                      "3\u20e3 チャンネルランキング(local)\n"
                                                      "~~4\u20e3 倒した敵の数ランキング~~\n").set_footer(text="cmd.rank"))
-        self.bot.on_cmd -= {ctx.author.id}
+        #self.bot.on_cmd -= {ctx.author.id}
         for i in range(4):
             if str(msg.embeds[0].footer.text) != "cmd.rank":
                 return
