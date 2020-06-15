@@ -70,7 +70,7 @@ class Cog(c.Cog):
         if not consume_an_item(user_id, 2):
             return await ctx.send(f"<@{user_id}>はファイアボールの書を持っていない！")
         player_level = status.get_player_level(user_id)
-        boss_lv, boss_hp, boss_id = battle.get_boss(channel_id)
+        boss_lv, boss_hp, boss_id = battle.get_boss(ctx)
         player_attack = int(player_level * (1 + random.random()) / 10)
         boss_hp = boss_hp - player_attack
         monster = monsters.get(boss_lv, boss_id)[1]
