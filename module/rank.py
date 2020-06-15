@@ -106,19 +106,14 @@ class Cog(c.Cog):
             if str(msg.embeds[0].footer.text) == "cmd.rank":
                 if str(payload.emoji) == "1\u20e3":
                     await refresh_rank1(msg, offset)
-                    await msg.clear_reactions()
-                    for emoji in ["\u23ee", "\u25c0", "\u23f9", "\u25b6", "\u23ed", "\U0001f201", "\U0001f504"]:
-                        await msg.add_reaction(emoji)
                 elif str(payload.emoji) == "2\u20e3":
                     await refresh_rank2(msg, False, offset)
-                    await msg.clear_reactions()
-                    for emoji in ["\u23ee", "\u25c0", "\u23f9", "\u25b6", "\u23ed", "\U0001f504"]:
-                        await msg.add_reaction(emoji)
                 elif str(payload.emoji) == "3\u20e3":
                     await refresh_rank2(msg, True, offset)
-                    await msg.clear_reactions()
-                    for emoji in ["\u23ee", "\u25c0", "\u23f9", "\u25b6", "\u23ed", "\U0001f504"]:
-                        await msg.add_reaction(emoji)
+                elif:return
+                await msg.clear_reactions()
+                for emoji in ["\u23ee", "\u25c0", "\u23f9", "\u25b6", "\u23ed", "\U0001f201", "\U0001f504"]:
+                    await msg.add_reaction(emoji)
 
 
 def setup(bot):

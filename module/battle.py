@@ -43,7 +43,7 @@ class Battle(c.Cog):
 
 
 def get_boss(ctx):
-    channel_status = db.boss_status.get_st(ctx)
+    channel_status = db.boss_status.get_st(ctx.channel.id)
     if not channel_status:
         from module import str_calc
         boss_lv = 1
@@ -81,29 +81,29 @@ def get_attack_message(user_id, player_attack, monster_name, rand):
         return "<@{}>の攻撃！{}{}に`{}`のダメージを与えた！".format(user_id, kaishin, monster_name, player_attack)
 
 
-def get_boss_attack(channel_id):
+def get_boss_attack(ctx):
     from module import str_calc
-    boss_lv, _, boss_id = db.boss_status.get_st(channel_id)
+    boss_lv, _, boss_id = db.boss_status.get_st(ctx.channel.id)
     from module import monsters
     monster = monsters.get(boss_lv, boss_id)[1]
     monster["ATK"] = monster["ATK"].replace("boss_level", str(boss_lv))
     return str_calc.calc(monster["ATK"])
 
 
-def boss_attack_process(user_id, player_hp, player_level, monster_name, channel_id):
-    boss_attack = get_boss_attack(channel_id)
+def boss_attack_process(ctx, player_hp, player_level, monster_name):
+    boss_attack = get_boss_attack(ctx)
     player_hp = player_hp - boss_attack
     if boss_attack == 0:
         return "{0}の攻撃！<@{1}>は華麗にかわした！\n - <@{1}>のHP:`{2}`/{3}".format(
-            monster_name, user_id, player_hp, player_level * 5 + 50)
+            monster_name, ctx.author.id, player_hp, player_level * 5 + 50)
     elif player_hp <= 0:
         db.player.hp.update(0, user_id)
         return "{0}の攻撃！<@{1}>は`{2}`のダメージを受けた。\n - <@{1}>のHP:`0`/{3}\n<@{1}>はやられてしまった。。。".format(
-            monster_name, user_id, boss_attack, player_level * 5 + 50)
+            monster_name, ctx.author.id, boss_attack, player_level * 5 + 50)
     else:
         db.player.hp.update(player_hp, user_id,)
         return "{0}の攻撃！<@{1}>は`{2}`のダメージを受けた。\n - <@{1}>のHP:`{3}`/{4}".format(
-            monster_name, user_id, boss_attack, player_hp, player_level * 5 + 50)
+            monster_name, ctx.author.id, boss_attack, player_hp, player_level * 5 + 50)
 
 
 def win_process(channel_id, boss_level, monster_name):
