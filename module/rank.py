@@ -110,7 +110,7 @@ class Cog(c.Cog):
                     await refresh_rank2(msg, False, offset)
                 elif str(payload.emoji) == "3\u20e3":
                     await refresh_rank2(msg, True, offset)
-                elif:return
+                else:return
                 await msg.clear_reactions()
                 for emoji in ["\u23ee", "\u25c0", "\u23f9", "\u25b6", "\u23ed", "\U0001f201", "\U0001f504"]:
                     await msg.add_reaction(emoji)
