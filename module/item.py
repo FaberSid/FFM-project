@@ -57,7 +57,7 @@ class Cog(c.Cog):
             full_hp = int(math.sqrt(in_battle[1])) * 5 + 50
             db.player.hp.update(full_hp, user_id)
         await ctx.send("<@{}>はエリクサーを使った！このチャンネルの仲間全員が全回復した！".format(user_id))
-        boss_lv, _, boss_id = battle.get_boss(channel_id)
+        boss_lv, _, boss_id = battle.get_boss(ctx)
         monster = monsters.get(boss_lv, boss_id)[1]
         await battle.Battle(self.bot).effect(ctx, monster)
 
@@ -104,7 +104,7 @@ class Cog(c.Cog):
             return await ctx.send("<@{}>は祈りの書を持っていない！".format(user_id))
         db.player.hp.update(1, prayed_user_id)
         await ctx.send("<@{0}>は祈りを捧げ、<@{1}>は復活した！\n<@{1}> 残りHP: 1".format(user_id, prayed_user_id, ))
-        boss_lv, _, boss_id = battle.get_boss(channel_id)
+        boss_lv, _, boss_id = battle.get_boss(ctx)
         monster = monsters.get(boss_lv, boss_id)[1]
         await battle.Battle(self.bot).effect(ctx, monster)
 
