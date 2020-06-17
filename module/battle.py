@@ -93,6 +93,7 @@ def get_boss_attack(ctx):
 def boss_attack_process(ctx, player_hp, player_level, monster_name):
     boss_attack = get_boss_attack(ctx)
     player_hp = player_hp - boss_attack
+    user_id = ctx.author.id
     if boss_attack == 0:
         return "{0}の攻撃！<@{1}>は華麗にかわした！\n - <@{1}>のHP:`{2}`/{3}".format(
             monster_name, ctx.author.id, player_hp, player_level * 5 + 50)
