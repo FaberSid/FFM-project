@@ -288,6 +288,8 @@ class boss_status:
 
     @staticmethod
     def get_list(channels: tuple):
+        if not channels:
+            return []
         conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
         c = conn.cursor()
         c.execute(
