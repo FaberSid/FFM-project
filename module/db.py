@@ -2,6 +2,7 @@ import os
 
 import psycopg2
 from psycopg2.errors import UniqueViolation
+from psycopg2.extras import Json
 
 CONFIG_ROOT = os.environ.get("DISCORD_BOT_CONFIG_ROOT")
 
@@ -20,6 +21,10 @@ def init():
                     experience BIGINT,\
                     money BIGINT check(money >= 0),\
                     monster_count BIGINT,\
+                    login_count BIGINT NULL DEFAULT '0',\
+                    last_login NUMERIC NULL DEFAULT '0',\
+                    lang TEXT NULL DEFAULT 'ja',\
+                    flag JSON NULL DEFAULT NULL,\
                     PRIMARY KEY (user_id)\
                 )")
     c.execute("create table if not exists channel_status(\
@@ -251,6 +256,21 @@ class player:
                 "UPDATE player set login_count=login_count+1, last_login=%s WHERE user_id=%s", (timestamp, user_id,))
             conn.commit()
             return
+
+    class selfbot:
+        @staticmethod
+        def get_user(user_id):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
+            c.execute("SELECT flag FROM player WHERE user_id=%s", (user_id,))
+            return c.fetchone()
+
+        @staticmethod
+        def set_point(user_id,point:dict={}):
+            conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
+            c = conn.cursor()
+            c.execute("UPDATE player set flag=%s WHERE user_id=%s", (Json(point), user_id,))
+            conn.commit()
 
     @staticmethod
     def monster_count(user_id):
