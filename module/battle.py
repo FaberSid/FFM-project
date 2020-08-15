@@ -121,7 +121,7 @@ def win_process(channel_id, boss_level, monster_name):
         level_up_comments.append(status.experiment(member_id, exp))
         members += "<@{}> ".format(member_id)
         p = min(0.02 * boss_level * boss_level / db.player.experience.get(member_id), 0.1)
-        if boss_level % 50 == 0 and random.random() < p:
+        if boss_level % 10 == 0 and random.random() < p:
             elixir_members += "<@{}> ".format(member_id)
             item.obtain_an_item(member_id, 1)
         if random.random() < p:
