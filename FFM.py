@@ -1,4 +1,5 @@
 import os
+from discord import AllowedMentions
 from discord.ext import commands as c
 from module.prefix import table
 from module import db
@@ -32,6 +33,6 @@ class MyBot(c.Bot):
     #    db.guild_remove(guild)
 
 
-bot = MyBot(command_prefix=table)
+bot = MyBot(command_prefix=table,allowed_mentions=AllowedMentions(everyone=False, users=False, roles=False))
 
 bot.run(os.environ.get("DISCORD_TOKEN_FFM"))
