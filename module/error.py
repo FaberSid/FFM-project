@@ -5,7 +5,7 @@ import traceback
 
 import aiohttp
 from discord import (AsyncWebhookAdapter, Embed, File, RawReactionActionEvent,
-                     Webhook, Forbidden)
+                     Webhook)
 from discord.ext import commands as c
 
 from module import item, status
@@ -27,7 +27,7 @@ class Cog(c.Cog):
 
     @c.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if any([isinstance(error, i) for i in [c.CommandNotFound, c.BadArgument, c.UnexpectedQuoteError, c.ExpectedClosingQuoteError, c.InvalidEndOfQuotedStringError, Forbidden]]):
+        if any([isinstance(error, i) for i in [c.CommandInvokeError, c.CommandNotFound, c.BadArgument, c.UnexpectedQuoteError, c.ExpectedClosingQuoteError, c.InvalidEndOfQuotedStringError]]):
             return
         elif isinstance(error, c.DisabledCommand):
             await ctx.send(embed=Embed(description="実行したコマンドは開発中か諸事情により開発者が無効化しています"))
