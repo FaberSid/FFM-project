@@ -263,7 +263,8 @@ class player:
             conn = psycopg2.connect(os.environ.get('DATABASE_URL_ffm'))
             c = conn.cursor()
             c.execute("SELECT flag FROM player WHERE user_id=%s", (user_id,))
-            return c.fetchone()
+            _ = c.fetchone()
+            return _ and _[0]
 
         @staticmethod
         def set_point(user_id,point:dict={}):
