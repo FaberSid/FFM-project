@@ -53,8 +53,8 @@ class Cog(c.Cog):
             boss_attack_message = battle.boss_attack_process(ctx, player_hp, player_level, monster_name)
             monster = monsters.get(boss_level, boss_id)[1]
             monster["HP"] = monster["HP"].replace("boss_level", str(boss_level))
-            await ctx.send(embed=Embed(description="{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, calc(monster["HP"]), boss_attack_message)))
-            await battle.Battle(self.bot).effect(ctx, monster)
+            effect = await battle.Battle(self.bot).effect(ctx, monster)
+            await ctx.send(embed=Embed(description=effet+"{}\n - {}のHP:`{}`/{}\n\n{}".format(attack_message, monster_name, boss_hp, calc(monster["HP"]), boss_attack_message)))
 
 def setup(bot):
     bot.add_cog(Cog(bot))
