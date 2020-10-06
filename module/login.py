@@ -94,10 +94,10 @@ class Cog(c.Cog):
     @c.command(pass_context=True, description='仮実装のloginコマンド。実行はしないほうがいいかもな')
     async def login(self, ctx):
         login_timezone = timezone(timedelta(hours=+0), 'UTC')
-        # timezone = timezone(timedelta(hours=+9), 'JST')
+        # login_timezone = timezone(timedelta(hours=+9), 'JST')
         now = datetime.now(login_timezone)
         login_data = db.player.login.get(ctx.author.id)
-        login_datetime = datetime.fromtimestamp(login_data[1],login_timezone)
+        login_datetime = datetime.fromtimestamp(login_data[1], login_timezone)
         next_login_datetime=datetime(login_datetime.year,login_datetime.month,login_datetime.day,tzinfo=login_timezone)+timedelta(1)
         #if now.timestamp()-login_data[1] >= 86400:  # 最終ログインから24時間
         if next_login_datetime > now:

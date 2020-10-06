@@ -15,7 +15,7 @@ with open('../assets/training.json', encoding='utf-8') as f:
 class Cog(c.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @c.command(pass_context=True, description='四字熟語の読み方をひらがなで入力し、正解すると経験値がもらえるぞ。')
     async def t(self, ctx):
         """トレーニングをする"""
