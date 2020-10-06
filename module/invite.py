@@ -1,7 +1,7 @@
 import asyncio
 import re
 
-from discord import Guild, NotFound, PartialInviteGuild
+from discord import Embed, Guild, NotFound, PartialInviteGuild
 from discord.ext import commands as c
 
 
@@ -40,6 +40,11 @@ class Cog(c.Cog):
         if self.bot.is_ready():
             await self.on_message(after)
 
+    @bot.command()
+    async def invite(self, ctx):
+        await ctx.send(embed=Embed(description="[FFM公式鯖(Discord)](https://discord.gg/Pvu2h2E)\n"
+                                               "[FFMボットの招待(Discord)](https://discordapp.com/oauth2/authorize?client_id=574476342163406858&scope=bot&permissions=67493056)\n\n"
+                                               "[supported by TAO](https://discord.gg/ETNbhqD)"))
 
 def setup(bot):
     bot.add_cog(Cog(bot))
