@@ -40,7 +40,7 @@ class Cog(c.Cog):
         if ctx.message.attachments:
             body = (await ctx.message.attachments[0].read()).decode('utf-8')
         else:
-            body = cleanup_code(ctx.message.content[len(ctx.prefix+ctx.command):].lstrip())
+            body = cleanup_code(ctx.message.content[len(ctx.prefix+ctx.invoked_with):].lstrip())
         stdout = io.StringIO()
 
         to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
