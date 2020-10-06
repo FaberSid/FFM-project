@@ -40,7 +40,7 @@ class Cog(c.Cog):
         if self.bot.is_ready():
             await self.on_message(after)
 
-    @bot.command()
+    @c.command()
     async def invite(self, ctx):
         await ctx.send(embed=Embed(description="[FFM公式鯖(Discord)](https://discord.gg/Pvu2h2E)\n"
                                                "[FFMボットの招待(Discord)](https://discordapp.com/oauth2/authorize?client_id=574476342163406858&scope=bot&permissions=67493056)\n\n"
