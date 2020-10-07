@@ -43,7 +43,7 @@ class Cog(c.Cog):
     @c.command()
     async def invite(self, ctx):
         await ctx.send(embed=Embed(description="[FFM公式鯖(Discord)](https://discord.gg/Pvu2h2E)\n"
-                                               "[FFMボットの招待(Discord)](https://discordapp.com/oauth2/authorize?client_id=574476342163406858&scope=bot&permissions=67493056)\n\n"
+                                               "[FFMボットの招待(Discord)](https://discordapp.com/oauth2/authorize?client_id=574476342163406858&scope=bot&permissions=67493056)\n"
                                                "[supported by TAO](https://discord.gg/ETNbhqD)"))
 
 def setup(bot):
