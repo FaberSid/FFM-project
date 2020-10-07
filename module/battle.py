@@ -40,7 +40,7 @@ class Battle(c.Cog):
             if db.player.effect.poison.add(ctx.author.id, ctx.channel.id, monster["effect"].get("poison", [5]*3)[2]):
                 text += [f"{ctx.author.name}は毒の効果を受けてしまった！"]
         if text:
-            return "\n".join(text)+"\n"
+            return "\n"+"\n".join(text)
         return ""
 
 
