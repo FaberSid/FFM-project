@@ -29,7 +29,7 @@ class Cog(c.Cog):
         def cheat(m):ischeat[0]=True-(m.author.id==574476415467257866)/5;return False
         await ctx.send(embed=discord.Embed(description="「{}」の読み方をひらがなで答えなさい。".format(training_set[q_id][0])).set_author(name="四字熟語トレーニング"))
         try:
-            guess = await self.bot.wait_for('message',timeout=15.0, check=(lambda m:m.content==answer and m.author!=user and cheat(m) or m.author==user))
+            guess = await self.bot.wait_for('message',timeout=15.0, check=(lambda m:answer in m.content and m.author!=user and cheat(m) or m.author==user))
         except asyncio.TimeoutError:
             await ctx.send(embed=discord.Embed(description='時間切れだ。正解は「{}」だ。'.format(answer)))
             return
