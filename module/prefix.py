@@ -23,10 +23,6 @@ class Cog(c.Cog):
                 await ctx.send("プレフィックスは５文字に抑えてくださいな")
             else:
                 db.prefix(ctx.guild).register(prefix_str)
-                try:
-                    await ctx.guild.get_member(self.bot.user.id).edit(nick=f"[{prefix_str}]{self.bot.user.name}")
-                except (Forbidden, HTTPException):
-                    pass
 
 
 def setup(bot):
