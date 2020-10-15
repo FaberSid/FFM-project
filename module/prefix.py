@@ -14,15 +14,19 @@ class Cog(c.Cog):
         self.bot = bot
 
     @c.command()
+    @c.has_permissions(administrator=True)
     async def prefix(self, ctx, *, prefix_str=None):
         if prefix_str is None:
-            await ctx.send("プレフィックスが指定されていません")
+            await ctx.send(f"プレフィックスが指定されていません\n今のプレフィックスは{db.prefix(message.guild).get()}です。")
         else:
-            db.prefix(ctx.guild).register(prefix_str)
-            try:
-                await ctx.guild.get_member(self.bot.user.id).edit(nick=f"[{prefix_str}]{self.bot.user.name}")
-            except (Forbidden, HTTPException):
-                pass
+            if len(prefix_str) > 5:
+                await ctx.send("プレフィックスは５文字に抑えてくださいな")
+            else:
+                db.prefix(ctx.guild).register(prefix_str)
+                try:
+                    await ctx.guild.get_member(self.bot.user.id).edit(nick=f"[{prefix_str}]{self.bot.user.name}")
+                except (Forbidden, HTTPException):
+                    pass
 
 
 def setup(bot):
