@@ -25,13 +25,14 @@ class Cog(c.Cog):
                 except NotFound:
                     pass
         elif messages.channel.id == 609008926767185950:
+            ffm = await self.bot.fetch_emoji(691027670900670576)
             url = re.findall("discord.gg/([a-zA-Z1-9]+)", messages.content)
             url += re.findall("invite/([a-zA-Z1-9]+)", messages.content)
             for i in url:
                 try:
                     invite = await self.bot.fetch_invite(i)
                     if isinstance(invite.guild, Guild):
-                        await messages.add_reaction("🇫")
+                        await messages.add_reaction(ffm)
                         return
                 except NotFound:
                     pass
