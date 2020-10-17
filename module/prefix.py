@@ -19,8 +19,8 @@ class Cog(c.Cog):
         if prefix_str is None:
             await ctx.send(f"プレフィックスが指定されていません\n今のプレフィックスは{db.prefix(message.guild).get()}です。")
         else:
-            if len(prefix_str) > 10:
-                await ctx.send("プレフィックスは５文字に抑えてくださいな")
+            if len(prefix_str) > 20:
+                await ctx.send("プレフィックスは20文字に抑えてくださいな")
             else:
                 db.prefix(ctx.guild).register(prefix_str)
 
