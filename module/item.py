@@ -48,7 +48,7 @@ class Cog(c.Cog):
 
     @item.command(aliases=['エリクサー', 'e'])
     async def elixir(self, ctx):
-        #user_id = ctx.message.author.id
+        user_id = ctx.message.author.id
         channel_id = ctx.message.channel.id
         if not consume_an_item(user_id, 1):
             return await ctx.send("<@{}>はエリクサーを持っていない！".format(user_id))
