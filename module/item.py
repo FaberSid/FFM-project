@@ -48,14 +48,14 @@ class Cog(c.Cog):
 
     @item.command(aliases=['エリクサー', 'e'])
     async def elixir(self, ctx):
-        user_id = ctx.message.author.id
+        #user_id = ctx.message.author.id
         channel_id = ctx.message.channel.id
         if not consume_an_item(user_id, 1):
             return await ctx.send("<@{}>はエリクサーを持っていない！".format(user_id))
         in_battles = db.channel.all_battle_player(channel_id)
         for in_battle in in_battles:
             full_hp = int(math.sqrt(in_battle[1])) * 5 + 50
-            db.player.hp.update(full_hp, user_id)
+            db.player.hp.update(full_hp, in_battle[0])
         await ctx.send("<@{}>はエリクサーを使った！このチャンネルの仲間全員が全回復した！".format(user_id))
         boss_lv, _, boss_id = battle.get_boss(ctx)
         monster = monsters.get(boss_lv, boss_id)[1]
