@@ -71,30 +71,30 @@ class Cog(c.Cog):
 
             offset = None
             limit = 10
-            if str(payload.emoji) == "\u23ee":  # first
+            if str(payload.emoji) == button[0]:  # first
                 offset = 0
-            elif str(payload.emoji) == "\u25c0":  # left
+            elif str(payload.emoji) == button[1]:  # left
                 offset, limit = map(lambda x: int(x, 16), str(
                     msg.embeds[0].footer.text).split("\u200b")[1:])
                 offset = offset-limit
                 if offset < 0:
                     return
-            elif str(payload.emoji) == "\u23f9":  # stop
+            elif str(payload.emoji) == button[2]:  # stop
                 await msg.clear_reactions()
                 return
-            elif str(payload.emoji) == "\u25b6":  # right
+            elif str(payload.emoji) == button[3]:  # right
                 offset, limit = map(lambda x: int(x, 16), str(
                     msg.embeds[0].footer.text).split("\u200b")[1:])
                 offset = offset+limit
                 if len(db.player.experience()) < offset:
                     return
-            elif str(payload.emoji) == "\u23ed":  # last
+            elif str(payload.emoji) == button[4]:  # last
                 limit = int(
                     str(msg.embeds[0].footer.text).split("\u200b")[2], 16)
                 offset = len(db.player.experience())//limit*limit
-            elif str(payload.emoji) == "\U0001f201":  # here
+            elif str(payload.emoji) == button[5]:  # here
                 pass
-            elif str(payload.emoji) == "\U0001f504":  # reload
+            elif str(payload.emoji) == button[6]:  # reload
                 offset, limit = map(lambda x: int(x, 16), str(
                     msg.embeds[0].footer.text).split("\u200b")[1:])
             if str(msg.embeds[0].footer.text).startswith("cmd.rank.player"):

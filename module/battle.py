@@ -4,7 +4,7 @@ import random
 import discord
 from discord.ext import commands as c
 
-from module import db, item, monsters, str_calc, status
+from module import db, item, monsters, status, str_calc
 
 MONSTER_NUM = 50
 
@@ -47,9 +47,7 @@ class Battle(c.Cog):
 def get_boss(ctx):
     channel_status = db.boss_status.get_st(ctx.channel.id)
     if not channel_status:
-        from module import str_calc
         boss_lv = 1
-        from module import monsters
         monster = monsters.get(boss_lv)
         monster[1]["HP"] = monster[1]["HP"].replace("boss_level", str(boss_lv))
         db.boss_status.set_st(ctx, monster[0], boss_lv, str_calc.calc(monster[1]["HP"]))
@@ -84,9 +82,7 @@ def get_attack_message(user_id, player_attack, monster_name, rand):
 
 
 def get_boss_attack(ctx):
-    from module import str_calc
     boss_lv, _, boss_id = db.boss_status.get_st(ctx.channel.id)
-    from module import monsters
     monster = monsters.get(boss_lv, boss_id)[1]
     monster["ATK"] = monster["ATK"].replace("boss_level", str(boss_lv))
     return str_calc.calc(monster["ATK"])
@@ -117,7 +113,10 @@ def win_process(channel_id, boss_level, monster_name):
     fire_members = ""
     elixir_members = ""
     pray_members = ""
-    exp = boss_level
+    boss_lv, _, boss_id = db.boss_status.get_st(channel_id)
+    monster = monsters.get(boss_lv, boss_id)[1]
+    monster["exp"] = monster["exp"].replace("boss_level", str(boss_lv))
+    exp = str_calc.calc(monster["exp"])
     for battle_member in battle_members:
         member_id = battle_member[0]
         level_up_comments.append(status.experiment(member_id, exp))
