@@ -264,7 +264,7 @@ class player:
             c = conn.cursor()
             c.execute("SELECT flag FROM player WHERE user_id=%s", (user_id,))
             _ = c.fetchone()
-            return _ or {} and _[0]
+            return _ and _[0]
 
         @staticmethod
         def set_point(user_id,point:dict={}):
