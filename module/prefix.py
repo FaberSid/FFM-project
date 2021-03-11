@@ -17,7 +17,7 @@ class Cog(c.Cog):
     @c.has_permissions(administrator=True)
     async def prefix(self, ctx, *, prefix_str=None):
         if prefix_str is None:
-            await ctx.send(f"プレフィックスが指定されていません\n今のプレフィックスは{db.prefix(message.guild).get()}です。")
+            await ctx.send(f"プレフィックスが指定されていません\n今のプレフィックスは{db.prefix(ctx.guild).get()}です。")
         else:
             if len(prefix_str) > 20:
                 await ctx.send("プレフィックスは20文字に抑えてくださいな")

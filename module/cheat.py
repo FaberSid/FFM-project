@@ -33,7 +33,7 @@ class Cheat(c.Cog):
         if all((x in USERs.get(str(ctx.author.id), [])) for x in ["Cheater", "Debugger"]):
             boss_level, _, boss_id = battle.get_boss(ctx)
             await ctx.send(str(monsters.get(boss_level, boss_id)), delete_after=10)
-    
+
     @cheat.command(description='経験値配布などで使います。')
     async def exp(self, ctx, num: int=None, *users):
         if all((x in USERs.get(str(ctx.author.id), [])) for x in ["Cheater", "Debugger"]):
