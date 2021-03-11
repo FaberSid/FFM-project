@@ -29,7 +29,7 @@ class Cog(c.Cog):
     async def on_command_error(self, ctx, error):
         if not __debug__:
             if any([isinstance(error, i) for i in [c.CommandInvokeError, c.CommandNotFound, c.BadArgument, c.UnexpectedQuoteError, c.ExpectedClosingQuoteError, c.InvalidEndOfQuotedStringError]]):
-                traceback.print_exc()
+                traceback.print_tb(error)
                 return
             elif isinstance(error, c.DisabledCommand):
                 await ctx.send(embed=Embed(description="実行したコマンドは開発中か諸事情により開発者が無効化しています"))
